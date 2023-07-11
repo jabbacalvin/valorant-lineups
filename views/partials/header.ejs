@@ -20,9 +20,9 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-sm bg-dark fixed-top fs-5">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top fs-5">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
           <img
             src="https://lh3.googleusercontent.com/drive-viewer/AITFw-wkL3D2hnZbhg94ESpTzaQnpRjRWHFL2TeGzTho55kPy2Cpij0FcOwJM8KirEdewYoC6nru_ANuTp8Qd5WZQMjNvJY2qw=s1600"
             width="50"
@@ -44,8 +44,13 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
+              <a class="nav-link active" aria-current="page" href="/">Home</a>
             </li>
+            <% if (user) { %>
+              <li class="nav-item">
+                <a class="nav-link" href="">Add New Lineup</a>
+              </li>
+            <% } %>
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item"></li>
