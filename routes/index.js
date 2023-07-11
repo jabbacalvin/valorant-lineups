@@ -16,18 +16,18 @@ router.get('/auth/google', passport.authenticate(
 ));
 
 // Google OAuth callback route
-router.get('/oauth2callback', passport.authenticate(
-  'google',
-  {
-    successRedirect: '/home',
-    failureRedirect: '/home'
-  }
-));
+router.get(
+  "/oauth2callback",
+  passport.authenticate("google", {
+    successRedirect: "/",
+    failureRedirect: "/",
+  })
+);
 
 // OAuth logout route
 router.get('/logout', function (req, res) {
   req.logout(function () {
-    res.redirect('/home');
+    res.redirect("/");
   });
 });
 
