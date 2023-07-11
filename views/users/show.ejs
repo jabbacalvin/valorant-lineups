@@ -1,15 +1,47 @@
-<h1><%= title %></h1>
-
-<a href="">Add Lineup</a>
-
-<table>
+<%- include('../partials/header') %>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <h1><%= title %></h1>
+</head>
+<br>
+<button
+  type="button"
+  class="btn btn-primary active"
+  data-bs-toggle="button"
+  aria-pressed="true"
+>
+  Submit New Lineup
+</button>
+<br />
+<br />
+<h2>Lineups</h2>
+<table class="table table-dark table-striped-columns">
   <thead>
-    <tr><br>
-      <label style="font-size: 30;">Created Lineups</label>
-      <th>Name</th>
-      <th>Map</th>
-      <th>Agent</th>
-      <th>Ability</th>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Lineup Name</th>
+      <th scope="col">Map</th>
+      <th scope="col">Agent</th>
+      <th scope="col">Ability</th>
     </tr>
   </thead>
+  <tbody></tbody>
 </table>
+<br><br><br>
+<h2>Favorites</h2>
+<table class="table table-dark table-striped-columns">
+  <thead>
+    <tr>
+      <th scope="col">Lineup Name</th>
+      <th scope="col">Map</th>
+      <th scope="col">Agent</th>
+      <th scope="col">Ability</th>
+      <th scope="col">Favorite</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+
+<%- include('../partials/footer') %>

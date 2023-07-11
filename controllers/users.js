@@ -5,5 +5,6 @@ module.exports = {
 };
 
 async function show(req, res) {
-  res.render("users/show", { title: "View Your Lineups" });
+  res.render("users/show", { title: "Manage Lineups" });
 }
+
