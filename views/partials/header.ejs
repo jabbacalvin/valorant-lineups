@@ -63,13 +63,14 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                User
+                <%= user.name %>
+                <% console.log('user info:', user) %>
               </a>
               <ul
                 class="dropdown-menu dropdown-menu-end dropdown-menu-dark text-center"
               >
                 <li class="nav-item">
-                  <a class="dropdown-item" href="#">Manage Lineups</a>
+                  <a class="dropdown-item" href="/users/show">Manage Lineups</a>
                 </li>
                 <li>
                   <hr class="dropdown-divider" />
