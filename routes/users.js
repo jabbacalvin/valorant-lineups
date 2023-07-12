@@ -4,6 +4,6 @@ const usersCtrl = require("../controllers/users");
 const ensureLoggedIn = require("../config/ensureLoggedIn");
 
 //GET /users
-router.get("/:id", usersCtrl.show);
+router.get("/:id", ensureLoggedIn, usersCtrl.show);
 
 module.exports = router;
