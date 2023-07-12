@@ -4,5 +4,7 @@ const usersCtrl = require("../controllers/users");
 
 //GET /users
 router.get("/:id", usersCtrl.show);
+//GET /index
+router.get('/', usersCtrl.index);
 
 module.exports = router;
