@@ -5,5 +5,5 @@ module.exports = {
 };
 
 function newLineup(req, res) {
-  res.render("lineups/new", { title: "New Lineup" });
+  res.render("lineups/new", { title: "Add New Lineup" });
 }
