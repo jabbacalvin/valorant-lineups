@@ -1,7 +1,19 @@
 <%- include('../partials/header') %>
 
-  <div class="container-fluid text-center">
-    <div class="clearfix">
+<style>
+  #canvasContainer {
+    position: relative;
+    display: inline-block;
+  }
+  #minimap-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+</style>
+
+<div class="container-fluid text-center">
+  <div class="clearfix">
     <div class="row">
       <div class="col-lg-6 col-md-6">
         <div class="row">
@@ -14,34 +26,155 @@
             </div>
           </div>
         </div>
-        <div class="row p-3">
+        <div class="row">
           <% agents.forEach(function(a) { %>
-            <div class="col-sm-2 p-2">
-              <img src="<%= a.icon %>" class="agent-image rounded img-fluid" alt="<%= a.name %>" />
+            <div class="col-lg-3 col-md-3">
+              <img src="<%= a.icon %>" class="rounded img-fluid" alt="<%= a.name %>" />
             </div>
-            <% }); %>
+          <% }); %>
         </div>
       </div>
       <div class="col-lg-6 col-md-6">
-        <img id="minimap-img" src="<%= map.minimap %>" alt="<%= map.name %>" hidden>
-        <canvas id="minimap-canvas"></canvas>
+        <div id="canvasContainer">
+          <img id="minimap-img" src="<%= map.minimap %>" alt="<%= map.name %>">
+          <canvas id="minimap-canvas"></canvas>
+        </div>
       </div>
     </div>
   </div>
 
+  <button onclick="addAnchorPair()">Add Lineup</button>
+  <button onclick="savePoints()">Save Lineup</button>
+  <button onclick="deleteSelectedPoints()">Delete Selected Lineup</button>
+
   <script>
-    const canvas = document.getElementById("minimap-canvas");
-    const ctx = canvas.getContext("2d");
+    const canvas = document.getElementById('minimap-canvas');
+    const ctx = canvas.getContext('2d');
+    const anchorPairs = [];
+    let isDragging = false;
+    let selectedAnchorPairIndex = -1;
+    let selectedAnchorIndex = -1;
+
     const image = new Image();
-    image.onload = drawImageActualSize;
-    image.src = document.getElementById("minimap-img").src;
+    image.onload = drawImageAndAnchors;
+    image.src = document.getElementById('minimap-img').src;
 
-    function drawImageActualSize() {
-      canvas.width = this.naturalWidth;
-      canvas.height = this.naturalHeight;
+    function drawImageAndAnchors() {
+      const { naturalWidth, naturalHeight } = image;
+      canvas.width = naturalWidth;
+      canvas.height = naturalHeight;
 
-      ctx.drawImage(this, 0, 0);
+      ctx.drawImage(image, 0, 0);
+      drawAnchorPairs();
     }
+
+    function drawAnchorPairs() {
+      anchorPairs.forEach((pair, pairIndex) => {
+        const anchor1 = pair.anchor1;
+        const anchor2 = pair.anchor2;
+        const isSelected = pairIndex === selectedAnchorPairIndex;
+
+        ctx.beginPath();
+        ctx.moveTo(anchor1.x, anchor1.y);
+        ctx.lineTo(anchor2.x, anchor2.y);
+        ctx.strokeStyle = isSelected ? 'orange' : pair.lineColor;
+        ctx.stroke();
+
+        [anchor1, anchor2].forEach((anchor) => {
+          if (anchor.isVisible) {
+            ctx.fillStyle = isSelected ? 'orange' : anchor.color;
+            ctx.beginPath();
+            ctx.arc(anchor.x, anchor.y, 10, 0, 2 * Math.PI);
+            ctx.fill();
+          }
+        });
+      });
+    }
+
+    function getMousePos(evt) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+      };
+    }
+
+    function handleMouseDown(evt) {
+      const mousePos = getMousePos(evt);
+
+      anchorPairs.forEach((pair, pairIndex) => {
+        const { anchor1, anchor2 } = pair;
+
+        if (Math.abs(mousePos.x - anchor1.x) <= 5 && Math.abs(mousePos.y - anchor1.y) <= 5) {
+          isDragging = true;
+          selectedAnchorPairIndex = pairIndex;
+          selectedAnchorIndex = 0;
+        } else if (Math.abs(mousePos.x - anchor2.x) <= 5 && Math.abs(mousePos.y - anchor2.y) <= 5) {
+          isDragging = true;
+          selectedAnchorPairIndex = pairIndex;
+          selectedAnchorIndex = 1;
+        }
+      });
+    }
+
+    function handleMouseMove(evt) {
+      if (!isDragging) return;
+
+      const mousePos = getMousePos(evt);
+      const pair = anchorPairs[selectedAnchorPairIndex];
+      const anchor = pair[selectedAnchorIndex === 0 ? 'anchor1' : 'anchor2'];
+
+      anchor.x = mousePos.x;
+      anchor.y = mousePos.y;
+
+      drawImageAndAnchors();
+    }
+
+    function handleMouseUp(evt) {
+      isDragging = false;
+      selectedAnchorPairIndex = -1;
+      selectedAnchorIndex = -1;
+    }
+
+    function addAnchorPair() {
+      const newAnchorPair = {
+        anchor1: { x: 100, y: 100, color: 'white', isVisible: true },
+        anchor2: { x: 300, y: 200, color: 'white', isVisible: true },
+        lineColor: 'black',
+      };
+      anchorPairs.push(newAnchorPair);
+      drawImageAndAnchors();
+    }
+
+    function savePoints() {
+      const lineupData = {
+        id: generateUniqueId(),
+        anchorPairs: anchorPairs.map(pair => ({
+          anchor1: { ...pair.anchor1 },
+          anchor2: { ...pair.anchor2 },
+          lineColor: pair.lineColor,
+        })),
+      };
+
+      console.log('Saved Lineup:', lineupData);
+    }
+
+    function generateUniqueId() {
+      return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
+    }
+
+    function deleteSelectedPoints() {
+      if (selectedAnchorPairIndex >= 0) {
+        anchorPairs.splice(selectedAnchorPairIndex, 1);
+        selectedAnchorPairIndex = -1;
+        selectedAnchorIndex = -1;
+        drawImageAndAnchors();
+      }
+    }
+
+    canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mouseup', handleMouseUp);
   </script>
 
-  <%- include('../partials/footer') %>
+<%- include('../partials/footer') %>
