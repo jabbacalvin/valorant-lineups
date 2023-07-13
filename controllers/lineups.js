@@ -25,5 +25,5 @@ async function create(req, res) {
 
 async function show(req, res) {
   const lineup = await Lineup.findById(req.params.id);
-  res.render("user/show", { title: "Movie Detail", lineup });
+  res.render("user/show", { lineup });
 }
