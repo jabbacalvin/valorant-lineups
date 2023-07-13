@@ -47,9 +47,9 @@
               <a class="nav-link active" aria-current="page" href="/">Home</a>
             </li>
             <% if (user) { %>
-              <li class="nav-item">
-                <a class="nav-link" href="">Add New Lineup</a>
-              </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/lineups/new">Add New Lineup</a>
+            </li>
             <% } %>
           </ul>
           <ul class="navbar-nav ms-auto">
@@ -63,20 +63,23 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <%= user.name %>
-                <% console.log('user info:', user) %>
+                <%= user.name %> <% console.log('user info:', user) %>
               </a>
               <ul
                 class="dropdown-menu dropdown-menu-end dropdown-menu-dark text-center"
               >
                 <li class="nav-item">
-                  <a class="dropdown-item" href="/users/show">Manage Lineups</a>
+                  <a
+                    class="dropdown-item"
+                    href="/users/show"
+                    >Manage Lineups</a
+                  >
                 </li>
                 <li>
                   <hr class="dropdown-divider" />
                 </li>
                 <li class="nav-item">
-                  <a href="logout" class="btn btn-outline-danger">Logout</a>
+                  <a href="/logout" class="btn btn-outline-danger">Logout</a>
                 </li>
               </ul>
             </li>
