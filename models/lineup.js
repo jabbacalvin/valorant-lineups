@@ -3,10 +3,12 @@ const Schema = mongoose.Schema;
 
 const lineupSchema = new Schema(
   {
-    content: { type: String, required: true },
+    name: { type: String, required: true },
     map: { type: String },
     agent: { type: String },
     ability: { type: String },
+    url: { type: String },
+    image: { data: Buffer, contentType: String },
   },
   {
     timestamps: true,
