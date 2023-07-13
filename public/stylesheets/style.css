@@ -24,6 +24,12 @@ a {
   top: 75%;
 }
 
+.map-button {
+  position: relative;
+  background: transparent;
+  border: none !important;
+}
+
 .map-image {
   background-position: center;
   background-repeat: no-repeat;
