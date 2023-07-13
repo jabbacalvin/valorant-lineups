@@ -20,7 +20,7 @@ async function index(req, res) {
     mapGrid[index % 3].push(map);
   });
   
-  res.render("maps/index", { title: "Maps", maps, mapGrid });
+  res.render("maps/index", { title: "Touch Grass", maps, mapGrid });
 }
 
 async function show(req, res) {
