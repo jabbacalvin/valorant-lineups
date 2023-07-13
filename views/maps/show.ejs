@@ -1,0 +1,38 @@
+<%- include('../partials/header') %>
+
+  <div class="container-fluid text-center">
+    <div class="clearfix">
+    <div class="row">
+      <div class="col-lg-6 col-md-6">
+          <div class="map-image rounded"
+            style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(<%= map.image %>)">
+            <div class="map-title">
+              <h1 class="text-uppercase p-4">
+                <%= map.name %>
+              </h1>
+            </div>
+          </div>
+      </div>
+      <div class="col-lg-6 col-md-6">
+        <img id="minimap-img" src="<%= map.minimap %>" hidden>
+        <canvas id="minimap-canvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("minimap-canvas");
+    const ctx = canvas.getContext("2d");
+    const image = new Image();
+    image.onload = drawImageActualSize;
+    image.src = document.getElementById("minimap-img").src;
+
+    function drawImageActualSize() {
+      canvas.width = this.naturalWidth;
+      canvas.height = this.naturalHeight;
+
+      ctx.drawImage(this, 0, 0);
+    }
+  </script>
+
+  <%- include('../partials/footer') %>

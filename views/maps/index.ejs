@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+
+  <h1 class="text-uppercase text-center">
+    <%= title %>
+  </h1>
+    
+  <div class="container-fluid">    
+    <% mapGrid.forEach(function(row) { %>
+      <div class="maps row justify-content-center">
+        <% row.forEach(function(col) { %>
+          <div class="map col-10 col-md-3 p-2">
+            <a href="/maps/<%= col._id %>">
+              <img src="<%= col.image %>" class="rounded img-fluid map-img" />
+              <span class="map-name fs-3">
+                <%= col.name %>
+              </span>
+            </a>
+          </div>
+          <% }); %>
+      </div>
+    <% }); %>
+  </div>
+  
+
+  <%- include('../partials/footer') %>
