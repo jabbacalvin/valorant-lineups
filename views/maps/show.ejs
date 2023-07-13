@@ -1,17 +1,5 @@
 <%- include('../partials/header') %>
 
-<style>
-  #canvasContainer {
-    position: relative;
-    display: inline-block;
-  }
-  #minimap-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-</style>
-
 <div class="container-fluid text-center">
   <div class="clearfix">
     <div class="row">
@@ -36,7 +24,7 @@
       </div>
       <div class="col-lg-6 col-md-6">
         <div id="canvasContainer">
-          <img id="minimap-img" src="<%= map.minimap %>" alt="<%= map.name %>">
+          <img id="minimap-img" src="<%= map.minimap %>" alt="<%= map.name %>" hidden>
           <canvas id="minimap-canvas"></canvas>
         </div>
       </div>
@@ -138,8 +126,8 @@
 
     function addAnchorPair() {
       const newAnchorPair = {
-        anchor1: { x: 100, y: 100, color: 'white', isVisible: true },
-        anchor2: { x: 300, y: 200, color: 'white', isVisible: true },
+        anchor1: { x: 500, y: 500, color: 'white', isVisible: true },
+        anchor2: { x: 600, y: 600, color: 'white', isVisible: true },
         lineColor: 'black',
       };
       anchorPairs.push(newAnchorPair);
@@ -156,7 +144,7 @@
         })),
       };
 
-      console.log('Saved Lineup:', lineupData);
+      console.log('Saved Lineup:', lineupData.anchorPairs);
     }
 
     function generateUniqueId() {
