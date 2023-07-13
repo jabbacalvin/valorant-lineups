@@ -23,8 +23,7 @@ async function create(req, res) {
   }
 }
 
-function show(req, res){
-  
+async function show(req, res) {
+  const lineup = await Lineup.findById(req.params.id);
+  res.render("user/show", { title: "Movie Detail", lineup });
 }
-// Lineup.create(req.body);
-// res.redirect('/lineups/show');
