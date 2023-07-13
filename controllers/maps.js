@@ -1,3 +1,4 @@
+const agent = require("../models/agent");
 const Map = require("../models/map");
 
 module.exports = {
@@ -24,6 +25,8 @@ async function index(req, res) {
 }
 
 async function show(req, res) {
-  const map = await Map.findById(req.params.id);
+  const map = await Map.findById(req.body.id);
+
+  
   res.render("maps/show", { title: "Map", map });
 }
