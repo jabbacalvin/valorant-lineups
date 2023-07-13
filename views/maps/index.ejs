@@ -7,7 +7,7 @@
             <form action="/maps/<%= col.name.toLowerCase() %>" method="POST">
               <input name="id" value="<%= col.id %>" type="hidden">
               <button class="map-button" type="submit">
-                <img src="<%= col.image %>" class="rounded img-fluid map-img" />
+                <img src="<%= col.image %>" class="rounded img-fluid map-img" alt="<%= col.name %>"/>
                 <span class="map-name fs-3">
                   <%= col.name %>
                 </span>
