@@ -9,6 +9,10 @@ const lineupSchema = new Schema(
     ability: { type: String },
     url: { type: String },
     image: { data: Buffer, contentType: String },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }
   },
   {
     timestamps: true,

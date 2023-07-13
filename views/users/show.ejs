@@ -28,20 +28,21 @@
     </tr>
   </thead>
   <tbody>
-      <tr>
-          <th scope="row">id</th>
-          <td>name</td>
-          <td>map_id</td>
-          <td>agent_id</td>
-          <td>ability_id</td>
-          <td>
-            <form action="" method="POST">
-              <a href="" type="button" class="btn btn-secondary">Edit</a>
-              <a href="" type="button" class="btn btn-danger">Delete</a>
-            </form>
-          </td>
-        </tr>
-
+    <% lineups.forEach(function(l) { %> 
+    <tr>
+      <th scope="row">id</th>
+	      <td><%= l.name %></td>
+        <td><%= l.map %></td>
+        <td><%= l.agent %></td>
+        <td><%= l.ability %></td>
+      <td>
+        <form action="" method="POST">
+          <a href="" type="button" class="btn btn-secondary">Edit</a>
+          <a href="" type="button" class="btn btn-danger">Delete</a>
+        </form>
+      </td>
+    </tr>
+    <% }) %>
   </tbody>
 </table>
 <br /><br /><br />
