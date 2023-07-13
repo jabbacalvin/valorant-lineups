@@ -1,0 +1,72 @@
+<%- include('../partials/header') %>
+<h2><%= title %></h2>
+<form id="new-form" action="/lineups" method="POST">
+  <div class="mb-3">
+    <label for="formGroupExampleInput" class="form-label">Name Lineup</label>
+    <input
+      type="text"
+      class="form-control"
+      id="formGroupExampleInput"
+      placeholder="He's defusing!"
+      name="name"
+    />
+  </div>
+  <br /><br />
+  <label for="">Select Map</label>
+  <select
+  class="form-select form-select-lg mb-3"
+  aria-label=".form-select-lg example"
+  name="map"
+  >
+  <option selected>Map</option>
+  <option value="1">One</option>
+  <option value="2">Two</option>
+  <option value="3">Three</option>
+</select>
+<br />
+<label for="">Select Agent</label>
+<select
+class="form-select form-select-lg mb-3"
+aria-label=".form-select-lg example"
+name="agent"
+>
+<option selected>Agent1</option>
+<option value="1">Agent2</option>
+<option value="2">Agent3</option>
+<option value="3">Agent4</option>
+</select>
+<label for="">Select Abilities</label>
+<select
+class="form-select form-select-sm"
+aria-label=".form-select-sm example"
+name="ability"
+>
+<option selected>Abilities</option>
+<option value="1">One</option>
+<option value="2">Two</option>
+<option value="3">Three</option>
+</select>
+<br /><br />
+  <div class="mb-3">
+    <label for="formFileMultiple" class="form-label">Upload Images</label>
+    <input class="form-control" type="file" id="formFileMultiple" multiple name="image" />
+  </div>
+  <div class="mb-3">
+    <label for="basic-url" class="form-label">Youtube URL</label>
+    <div class="input-group">
+      <span class="input-group-text" id="basic-addon3">Youtube</span>
+      <input
+        type="text"
+        class="form-control"
+        id="basic-url"
+        aria-describedby="basic-addon3 basic-addon4"
+        name="url"
+      />
+    </div>
+  </div>
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button class="btn btn-primary me-md-2" type="submit">Submit</button>
+  </div>
+</form>
+
+<%- include('../partials/footer') %>
