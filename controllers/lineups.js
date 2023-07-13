@@ -1,29 +1,32 @@
 const Lineup = require("../models/lineup");
+const User = require("../models/user");
 
 module.exports = {
+  // show,
   new: newLineup,
   create,
-  show,
 };
+
+// async function show(req, res) {
+//   const lineups = await Lineup.find({});
+//   console.log(lineups);
+//   res.render("user/show", { lineups });
+// }
 
 function newLineup(req, res) {
   res.render("lineups/new", { title: "Add New Lineup" });
 }
 
 async function create(req, res) {
-  for (let key in req.body) {
-    if (req.body[key] === "") delete req.body[key];
-  }
+  const user = await User.findById(req.params.id);
+  req.body.user = req.user._id;
   try {
     const lineup = await Lineup.create(req.body);
-    res.redirect(`/user/show`);
+    // console.log(lineup);
+    res.redirect(`/users/show`);
   } catch (err) {
     console.log(err);
     res.render("lineups/new", { errorMsg: err.message });
   }
 }
 
-async function show(req, res) {
-  const lineup = await Lineup.findById(req.params.id);
-  res.render("user/show", { lineup });
-}

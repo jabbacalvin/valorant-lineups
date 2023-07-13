@@ -3,7 +3,8 @@ var router = express.Router();
 const usersCtrl = require("../controllers/users");
 const ensureLoggedIn = require("../config/ensureLoggedIn");
 
-//GET /users/:id/show
-router.get("/:id", ensureLoggedIn, usersCtrl.show);
+//GET /users/show
+router.get("/show", ensureLoggedIn, usersCtrl.show);
+
 
 module.exports = router;
