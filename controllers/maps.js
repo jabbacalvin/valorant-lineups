@@ -1,3 +1,4 @@
+const { name } = require("ejs");
 const Agent = require("../models/agent");
 const Map = require("../models/map");
 
@@ -7,8 +8,8 @@ module.exports = {
 };
 
 async function index(req, res) {
-  const maps = await Map.find();
-
+  const maps = await Map.find().sort({ name: 1 });
+  
   let mapGrid = [];
 
   maps.forEach(function (map, index) {
@@ -26,7 +27,7 @@ async function index(req, res) {
 
 async function show(req, res) {
   const map = await Map.findById(req.body.id);
-  const agents = await Agent.find();
+  const agents = await Agent.find().sort({name: 1});
 
   res.render("maps/show", { title: "Map", map, agents });
 }

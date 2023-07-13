@@ -42,6 +42,14 @@ a {
   color: white;
 }
 
+.agent-image {
+  opacity: 0.5;
+}
+
+.agent-image:hover {
+  opacity: 1;
+}
+
 #minimap-canvas {
   width: 100%;
   height: 100%;
