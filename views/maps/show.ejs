@@ -6,7 +6,7 @@
       <div class="col-lg-5 col-md-5">
         <div class="row">
           <div id="map-banner-container">
-            <div id="map-banner" class="map-banner">
+            <div id="map-banner" class="map-banner" >
               <div class="map-title">
                 <h1 class="text-uppercase p-4">
                   <%= map.name %>
@@ -15,14 +15,12 @@
             </div>
           </div>
         </div>
-        <div class="row p-3">
+        <div id="agents-container" class="row p-3">
           <% agents.forEach(function(a) { %>
             <div class="agent-image-container col-sm-2 p-2">
-              <form action="/maps/<%= map.name.toLowerCase() %>" method="GET">
-                <button class="agent-button" type="submit">
-                  <img src="<%= a.icon %>" class="agent-image rounded img-fluid" alt="<%= a.name %>" />
-                </button>
-              </form>
+              <button class="agent-button" type="submit" data-id="<%= a._id %>">
+                <img src="<%= a.icon %>" class="agent-image rounded img-fluid" alt="<%= a.name %>" />
+              </button>
             </div>
           <% }); %>
         </div>
@@ -41,6 +39,22 @@
   <button onclick="deleteAnchorPair()">Delete Selected Lineup</button>
 
   <script>
+    const agentsEl = document.getElementById('agents-container');
+    const agentEl = document.querySelectorAll('.agent-image');
+    agentsEl.addEventListener('click', async function(e) {
+      if(e.target.nodeName === "IMG") {
+        agentEl.forEach(e => e.classList.remove('agent-image-focus'));
+        e.target.classList.toggle('agent-image-focus');
+        const agentId = e.target.parentElement.dataset.id;
+        const mapId = '<%= map._id %>';
+
+        let response = await fetch(`/api/lineups/${mapId}/${agentId}`);
+        let data = await response.json();
+        console.log(data);
+        // call function to pass data to minimap
+      }
+    });
+
     const mapBanner = document.getElementById('map-banner');
     mapBanner.style.backgroundImage = "linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%), url(<%= map.image %>)";
 
