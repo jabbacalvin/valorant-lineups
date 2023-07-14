@@ -9,20 +9,8 @@ module.exports = {
 
 async function index(req, res) {
   const maps = await Map.find().sort({ name: 1 });
-  
-  let mapGrid = [];
 
-  maps.forEach(function (map, index) {
-    if (!(index % 3)) {
-      mapGrid.push([]);
-    }
-  });
-  
-  maps.forEach(function (map, index) {
-    mapGrid[index % 3].push(map);
-  });
-  
-  res.render("maps/index", { title: "Touch Grass", maps, mapGrid });
+  res.render("maps/index", { title: "Touch Grass", maps });
 }
 
 async function show(req, res) {
