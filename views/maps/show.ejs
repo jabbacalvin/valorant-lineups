@@ -189,16 +189,16 @@
       const { anchor1, anchor2 } = anchorPairs[pairIndex];
 
       if (
-        Math.abs(mousePos.x - anchor1.x) <= 20 &&
-        Math.abs(mousePos.y - anchor1.y) <= 20
+        Math.abs(mousePos.x - anchor1.x) <= 25 &&
+        Math.abs(mousePos.y - anchor1.y) <= 25
       ) {
         isDragging = true;
         selectedAnchorPairIndex = pairIndex;
         selectedAnchorIndex = 0;
         break;
       } else if (
-        Math.abs(mousePos.x - anchor2.x) <= 20 &&
-        Math.abs(mousePos.y - anchor2.y) <= 20
+        Math.abs(mousePos.x - anchor2.x) <= 25 &&
+        Math.abs(mousePos.y - anchor2.y) <= 25
       ) {
         isDragging = true;
         selectedAnchorPairIndex = pairIndex;
