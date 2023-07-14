@@ -20,7 +20,6 @@
 <table class="table table-borderless">
   <thead>
     <tr>
-      <th scope="col">#</th>
       <th scope="col">Lineup Name</th>
       <th scope="col">Map</th>
       <th scope="col">Agent</th>
@@ -28,16 +27,15 @@
     </tr>
   </thead>
   <tbody>
-    <% lineups.forEach(function(l) { %> 
+    <% lineups.forEach(function(l) { %>
     <tr>
-      <th scope="row">id</th>
-	      <td><%= l.name %></td>
-        <td><%= l.map %></td>
-        <td><%= l.agent %></td>
-        <td><%= l.ability %></td>
+      <td><%= l.name %></td>
+      <td><%= l.map %></td>
+      <td><%= l.agent %></td>
+      <td><%= l.ability %></td>
       <td>
-        <form action="" method="POST">
-          <a href="" type="button" class="btn btn-secondary">Edit</a>
+        <a href="/lineups/edit/<%= l._id %>" type="button" class="btn btn-secondary">Edit</a>
+        <form action="/" method="POST">
           <a href="" type="button" class="btn btn-danger">Delete</a>
         </form>
       </td>
