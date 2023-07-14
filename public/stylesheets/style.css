@@ -139,10 +139,10 @@ a {
 }
 
 .abilities-icon {
-  height: 5rem;
-  width: 5rem;
+  width: 3.5rem;
   margin: 0.5rem;
   margin-left: 1rem;
+  object-fit: cover;
 }
 
 #minimap-canvas {
