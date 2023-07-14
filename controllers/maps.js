@@ -27,7 +27,7 @@ async function index(req, res) {
 
 async function show(req, res) {
   const map = await Map.findById(req.body.id);
-  const agents = await Agent.find().sort({name: 1});
-
+  const agents = await Agent.find().sort({ name: 1 });
+  
   res.render("maps/show", { title: "Map", map, agents });
 }
