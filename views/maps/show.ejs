@@ -26,10 +26,12 @@
           </div>
           <% }); %>
         </div>
-        <div id="abilities-container" class="row">
-          <h1 class="text-white">ABILITIES</h1>
-          <div id="abilities-img-container">
-            
+        <div class="row">
+          <div id="abilities-container">
+            <h1 class="text-white">ABILITIES</h1>
+            <div id="abilities-img-container">
+
+            </div>
           </div>
         </div>
       </div>
@@ -58,8 +60,8 @@
     const abilitiesEl = document.getElementById('abilities-container');
     const abilitiesImgEl = document.getElementById('abilities-img-container');  
     agentsEl.addEventListener('click', async function(e) {
-      abilitiesImgEl.innerHTML = "";
       if(e.target.nodeName === "IMG") {
+        abilitiesImgEl.innerHTML = "";
         agentEl.forEach(e => e.classList.remove('agent-image-focus'));
         e.target.classList.toggle('agent-image-focus');
         const agentId = e.target.parentElement.dataset.id;
@@ -73,7 +75,7 @@
         abilitiesEl.style.visibility = 'visible';
         agentAbilities.forEach(function(a) {
           abilitiesImgEl.innerHTML += 
-            `<img src="${a.icon}" class="abilities-icon" data-id="${a._id}" alt="${a.name}" >`;
+            `<img src="${a.icon}" class="abilities-icon image-fluid" data-id="${a._id}" alt="${a.name}" >`;
         });
         abilitiesImgEl.classList.add('col-12');
 
