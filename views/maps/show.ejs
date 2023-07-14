@@ -58,8 +58,8 @@
     const abilitiesEl = document.getElementById('abilities-container');
     const abilitiesImgEl = document.getElementById('abilities-img-container');  
     agentsEl.addEventListener('click', async function(e) {
+      abilitiesImgEl.innerHTML = "";
       if(e.target.nodeName === "IMG") {
-        abilitiesImgEl.innerHTML = "";
         agentEl.forEach(e => e.classList.remove('agent-image-focus'));
         e.target.classList.toggle('agent-image-focus');
         const agentId = e.target.parentElement.dataset.id;
