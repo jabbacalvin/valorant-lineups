@@ -1,84 +1,105 @@
 <%- include('../partials/header') %>
-<h2><%= title %></h2>
-<form id="new-form" action="/lineups" method="POST">
-  <div class="mb-3">
-    <label for="formGroupExampleInput" class="form-label">Name Lineup</label>
-    <input
-      type="text"
-      class="form-control"
-      id="formGroupExampleInput"
-      placeholder="He's defusing!"
-      name="name"
-    />
-  </div>
-  <br /><br />
-  <label for="">Select Map</label>
-  <select
+<h2 class="text-white"><%= title %></h2>
+<div class="container-fluid">
+  <form id="new-form" action="/lineups" method="POST">
+    <div class="col-lg-6 col-md-6">
+
+      <div class="mb-3">
+        <label for="formGroupExampleInput" class="form-label text-white">Name Lineup</label>
+        <input
+        type="text"
+        class="form-control"
+        id="formGroupExampleInput"
+        placeholder="He's defusing!"
+        name="name"
+        />
+      </div>
+      <br />
+      <label for="" class="text-white">Select Map</label>
+      <select
     class="form-select form-select-lg mb-3"
     aria-label=".form-select-lg example"
     name="map"
-  >
+    placeholder="Map"
+    >
+    <option selected placeholder="Map"></option>
     <%- maps.map(m => `
     <option value="${m._id}">${m.name}</option>
     `).join('') %>
   </select>
   <br />
-
-  <label for="">Select Agent</label>
+  
+  <label class="text-white">Select Agent</label>
   <select
-    class="form-select form-select-lg mb-3"
-    aria-label=".form-select-lg example"
-    name="agent"
+  id="agent-select"
+  class="form-select form-select-lg mb-3"
+  aria-label=".form-select-lg example"
+  name="agent"
   >
-    <%- agents.map(a => `
+  <option selected placeholder="Agent"></option>
+  <%- agents.map(a => `
     <option value="${a._id}">${a.name}</option>
     `).join('') %>
-    <!-- <option selected>Agent1</option>
-    <option value="1">Agent2</option>
-    <option value="2">Agent3</option>
-    <option value="3">Agent4</option> -->
   </select>
-  <label for="">Select Abilities</label>
+  
+  <label class="text-white">Select Abilities</label>
   <select
-    class="form-select form-select-sm"
-    aria-label=".form-select-sm example"
-    name="ability"
+  id="ability-select"
+  class="form-select form-select-sm"
+  aria-label=".form-select-sm example"
+  name="ability"
   >
-    <%- agentAbilities.map(ability => `
-    <option value="${ability._id}">${ability.name}</option>
-    `).join('') %>
-    <!-- <option selected>Abilities</option>
-    <option value="1">One</option>
-    <option value="2">Two</option>
-    <option value="3">Three</option> -->
-  </select>
-  <br /><br />
-  <div class="mb-3">
-    <label for="formFileMultiple" class="form-label">Upload Images</label>
+  <option selected placeholder="Abilities"></option>
+  
+</select>
+<br /><br />
+<div class="mb-3">
+  <label for="formFileMultiple" class="form-label text-white">Upload Images</label>
+  <input
+  class="form-control"
+  type="file"
+  id="formFileMultiple"
+  multiple
+  name="image"
+  />
+</div>
+<div class="mb-3">
+  <label for="basic-url" class="form-label text-white">Youtube URL</label>
+  <div class="input-group">
+    <span class="input-group-text" id="basic-addon3">Youtube</span>
     <input
-      class="form-control"
-      type="file"
-      id="formFileMultiple"
-      multiple
-      name="image"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="basic-url" class="form-label">Youtube URL</label>
-    <div class="input-group">
-      <span class="input-group-text" id="basic-addon3">Youtube</span>
-      <input
-        type="text"
-        class="form-control"
-        id="basic-url"
-        aria-describedby="basic-addon3 basic-addon4"
-        name="url"
+    type="text"
+    class="form-control"
+    id="basic-url"
+      aria-describedby="basic-addon3 basic-addon4"
+      name="url"
       />
     </div>
   </div>
   <div class="d-grid gap-2 d-md-flex justify-content-md-end">
     <button class="btn btn-primary me-md-2" type="submit">Submit</button>
   </div>
+</div>
+<div class="col-lg-6 col-md-6"></div>
 </form>
+</div>
+
+<script>
+  const agentSelectEl = document.getElementById("agent-select");
+  const abilitySelectEl = document.getElementById("ability-select");
+  agentSelectEl.addEventListener("change", async function (e) {
+    abilitySelectEl.innerHTML= '';
+    // console.dir(e);
+    let agentId = e.target.value;
+    let response = await fetch(`/api/lineups/${agentId}`);
+    let data = await response.json();
+    console.log(data);
+    data.forEach(function(a){
+      abilitySelectEl.innerHTML += `<option value='${a._id}'> ${a.name} </option>`
+      
+    });
+  })
+  
+</script>
 
 <%- include('../partials/footer') %>

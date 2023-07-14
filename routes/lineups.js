@@ -6,14 +6,10 @@ const ensureLoggedIn = require("../config/ensureLoggedIn");
 // GET /lineups/new
 router.get("/new", ensureLoggedIn, lineupsCtrl.new);
 
-// GET /lineups/:id
-// router.get('/show', ensureLoggedIn, lineupsCtrl.show);
-
 // POST /lineups
-router.post('/', ensureLoggedIn, lineupsCtrl.create)
+router.post("/", ensureLoggedIn, lineupsCtrl.create);
 
 // EDIT /lineups/:id/edit
-router.get('/:id/edit', ensureLoggedIn, lineupsCtrl.edit);
-
+// router.get("/:id/edit", ensureLoggedIn, lineupsCtrl.edit);
 
 module.exports = router;
