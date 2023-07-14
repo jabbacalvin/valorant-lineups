@@ -8,9 +8,7 @@
           <div id="map-banner-container">
             <div id="map-banner" class="map-banner" >
               <div class="map-title">
-                <h1 class="text-uppercase p-4">
-                  <%= map.name %>
-                </h1>
+                <h1 class="text-uppercase p-4"><%= map.name %></h1>
               </div>
             </div>
           </div>
@@ -27,7 +25,12 @@
       </div>
       <div class="col-lg-7 col-md-7">
         <div id="canvas-container">
-          <img id="minimap-img" src="<%= map.minimap %>" alt="<%= map.name %>" hidden>
+          <img
+            id="minimap-img"
+            src="<%= map.minimap %>"
+            alt="<%= map.name %>"
+            hidden
+          />
           <canvas id="minimap-canvas"></canvas>
         </div>
       </div>
@@ -39,7 +42,7 @@
   <button onclick="deleteAnchorPair()">Delete Selected Lineup</button>
 
   <script>
-    const agentsEl = document.getElementById('agents-container');
+   const agentsEl = document.getElementById('agents-container');
     const agentEl = document.querySelectorAll('.agent-image');
     agentsEl.addEventListener('click', async function(e) {
       if(e.target.nodeName === "IMG") {
@@ -53,31 +56,42 @@
         console.log(data);
         // call function to pass data to minimap
       }
-    });
-
+    }); 
     const mapBanner = document.getElementById('map-banner');
     mapBanner.style.backgroundImage = "linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%), url(<%= map.image %>)";
 
-    const canvas = document.getElementById('minimap-canvas');
-    const ctx = canvas.getContext('2d');
+    const canvas = document.getElementById("minimap-canvas");
+    const ctx = canvas.getContext("2d");
     const anchorPairs = [];
     let hasAnchorPairBeenAdded = false;
     let isDragging = false;
     let selectedAnchorPairIndex = -1;
     let selectedAnchorIndex = -1;
+    let scale = 1;
+    let totalTranslation = { x: 0, y: 0 };
 
     const image = new Image();
     image.onload = drawImageAndAnchors;
-    image.src = document.getElementById('minimap-img').src;
+    image.src = document.getElementById("minimap-img").src;
 
     function drawImageAndAnchors() {
-      const { naturalWidth, naturalHeight } = image;
-      canvas.width = naturalWidth;
-      canvas.height = naturalHeight;
+  const { naturalWidth, naturalHeight } = image;
+  canvas.width = naturalWidth;
+  canvas.height = naturalHeight;
 
-      ctx.drawImage(image, 0, 0);
-      drawAnchorPairs();
-    }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.save();
+  ctx.translate(totalTranslation.x, totalTranslation.y);
+  ctx.scale(scale, scale);
+  ctx.translate(-totalTranslation.x / scale, -totalTranslation.y / scale);
+  
+  ctx.drawImage(image, 0, 0);
+  drawAnchorPairs();
+
+  ctx.restore();
+}
+
 
     function drawAnchorPairs() {
       anchorPairs.forEach((pair, pairIndex) => {
@@ -88,57 +102,107 @@
         ctx.beginPath();
         ctx.moveTo(anchor1.x, anchor1.y);
         ctx.lineTo(anchor2.x, anchor2.y);
-        ctx.strokeStyle = isSelected ? 'orange' : pair.lineColor;
+        ctx.strokeStyle = isSelected ? "orange" : pair.lineColor;
+        ctx.lineWidth = 2 / scale; // adjust line width with the scale
         ctx.stroke();
 
         [anchor1, anchor2].forEach((anchor) => {
           if (anchor.isVisible) {
-            ctx.fillStyle = isSelected ? 'orange' : anchor.color;
+            ctx.fillStyle = isSelected ? "orange" : anchor.color;
             ctx.beginPath();
-            ctx.arc(anchor.x, anchor.y, 10, 0, 2 * Math.PI);
+            ctx.arc(anchor.x, anchor.y, 10 / scale, 0, 2 * Math.PI); // adjust the anchor radius with the scale
             ctx.fill();
           }
         });
       });
     }
+    function addAnchorPair() {
+      if (anchorPairs.length === 0) {
+        const newAnchorPair = {
+          anchor1: { x: 500, y: 500, color: "red", isVisible: true },
+          anchor2: { x: 600, y: 600, color: "blue", isVisible: true },
+          lineColor: "black",
+        };
+        anchorPairs.push(newAnchorPair);
+        drawImageAndAnchors();
+      } else {
+        console.log("An anchor pair already exists.");
+      }
+    }
+
+    function deleteAnchorPair() {
+      if (anchorPairs.length > 0) {
+        anchorPairs.pop(); // Removes the last (in this case, the only) element
+        drawImageAndAnchors();
+        console.log("Anchor pair deleted.");
+      } else {
+        console.log("No anchor pair to delete.");
+      }
+    }
+
+    function savePoints() {
+      const lineupData = {
+        id: generateUniqueId(),
+        anchorPairs: anchorPairs.map((pair) => ({
+          anchor1: { ...pair.anchor1 },
+          anchor2: { ...pair.anchor2 },
+          lineColor: pair.lineColor,
+        })),
+      };
+
+      console.log("Saved Lineup:", lineupData.anchorPairs);
+    }
+
+    function generateUniqueId() {
+      return (
+        Date.now().toString() + Math.floor(Math.random() * 1000).toString()
+      );
+    }
 
     function getMousePos(evt) {
   const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
+  const scaleX = (canvas.width / rect.width) / scale;  // incorporate the scale
+  const scaleY = (canvas.height / rect.height) / scale;  // incorporate the scale
 
   return {
-    x: (evt.clientX - rect.left) * scaleX,
-    y: (evt.clientY - rect.top) * scaleY
+    x: (evt.clientX - rect.left) * scaleX - totalTranslation.x / scale,
+    y: (evt.clientY - rect.top) * scaleY - totalTranslation.y / scale
   };
 }
 
     function handleMouseDown(evt) {
-  const mousePos = getMousePos(evt);
-  isDragging = false; // initialize isDragging as false
-  for(let pairIndex = 0; pairIndex < anchorPairs.length; pairIndex++) { // use a for loop instead of forEach
-    const { anchor1, anchor2 } = anchorPairs[pairIndex];
+      const mousePos = getMousePos(evt);
+      isDragging = false; // initialize isDragging as false
+      for (let pairIndex = 0; pairIndex < anchorPairs.length; pairIndex++) {
+        // use a for loop instead of forEach
+        const { anchor1, anchor2 } = anchorPairs[pairIndex];
 
-    if (Math.abs(mousePos.x - anchor1.x) <= 50 && Math.abs(mousePos.y - anchor1.y) <= 50) {
-      isDragging = true;
-      selectedAnchorPairIndex = pairIndex;
-      selectedAnchorIndex = 0;
-      break; // break the loop
-    } else if (Math.abs(mousePos.x - anchor2.x) <= 50 && Math.abs(mousePos.y - anchor2.y) <= 50) {
-      isDragging = true;
-      selectedAnchorPairIndex = pairIndex;
-      selectedAnchorIndex = 1;
-      break; // break the loop
+        if (
+          Math.abs(mousePos.x - anchor1.x) <= 50 &&
+          Math.abs(mousePos.y - anchor1.y) <= 50
+        ) {
+          isDragging = true;
+          selectedAnchorPairIndex = pairIndex;
+          selectedAnchorIndex = 0;
+          break; // break the loop
+        } else if (
+          Math.abs(mousePos.x - anchor2.x) <= 50 &&
+          Math.abs(mousePos.y - anchor2.y) <= 50
+        ) {
+          isDragging = true;
+          selectedAnchorPairIndex = pairIndex;
+          selectedAnchorIndex = 1;
+          break; // break the loop
+        }
+      }
     }
-  }
-}
 
     function handleMouseMove(evt) {
       if (!isDragging) return;
 
       const mousePos = getMousePos(evt);
       const pair = anchorPairs[selectedAnchorPairIndex];
-      const anchor = pair[selectedAnchorIndex === 0 ? 'anchor1' : 'anchor2'];
+      const anchor = pair[selectedAnchorIndex === 0 ? "anchor1" : "anchor2"];
 
       anchor.x = mousePos.x;
       anchor.y = mousePos.y;
@@ -152,53 +216,39 @@
       selectedAnchorIndex = -1;
     }
 
-    function addAnchorPair() {
-  if (anchorPairs.length === 0) {
-    const newAnchorPair = {
-      anchor1: { x: 500, y: 500, color: 'red', isVisible: true },
-      anchor2: { x: 600, y: 600, color: 'blue', isVisible: true },
-      lineColor: 'black',
-    };
-    anchorPairs.push(newAnchorPair);
-    drawImageAndAnchors();
-  } else {
-    console.log("An anchor pair already exists.");
+    function handleWheel(evt) {
+  evt.preventDefault();
+
+  // Zooming factor
+  const factor = 0.1;
+
+  // Get the mouse position relative to the canvas
+  const mousePos = getMousePos(evt);
+
+  // Getting the old scale
+  const oldScale = scale;
+
+  // Update the scale
+  scale *= Math.pow(1 + factor, evt.deltaY / -30);
+
+  // Set boundaries for the zoom
+  scale = Math.max(0.5, Math.min(scale, 2));
+
+  // Calculate the translation that centers the mouse position
+  if (oldScale !== scale) {
+    totalTranslation.x = mousePos.x - (mousePos.x - totalTranslation.x) * oldScale / scale;
+    totalTranslation.y = mousePos.y - (mousePos.y - totalTranslation.y) * oldScale / scale;
   }
+
+  // Re-draw everything with the new transformations
+  drawImageAndAnchors();
 }
 
 
-function deleteAnchorPair() {
-  if (anchorPairs.length > 0) {
-    anchorPairs.pop(); // Removes the last (in this case, the only) element
-    drawImageAndAnchors();
-    console.log("Anchor pair deleted.");
-    
-  } else {
-    console.log("No anchor pair to delete.");
-  }
-}
-
-    function savePoints() {
-      const lineupData = {
-        id: generateUniqueId(),
-        anchorPairs: anchorPairs.map(pair => ({
-          anchor1: { ...pair.anchor1 },
-          anchor2: { ...pair.anchor2 },
-          lineColor: pair.lineColor,
-        })),
-      };
-
-      console.log('Saved Lineup:', lineupData.anchorPairs);
-    }
-
-    function generateUniqueId() {
-      return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
-    }
-
-
-    canvas.addEventListener('mousedown', handleMouseDown);
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseup', handleMouseUp);
+    canvas.addEventListener("wheel", handleWheel);
+    canvas.addEventListener("mousedown", handleMouseDown);
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseup", handleMouseUp);
   </script>
-
+</div>
 <%- include('../partials/footer') %>
