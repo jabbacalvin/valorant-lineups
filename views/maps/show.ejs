@@ -5,21 +5,26 @@
     <div class="row">
       <div class="col-lg-6 col-md-6">
         <div class="row">
-          <div class="map-image rounded"
-            style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(<%= map.image %>);">
-            <div class="map-title">
-              <h1 class="text-uppercase p-4">
-                <%= map.name %>
-              </h1>
+          <div id="map-banner-container">
+            <div id="map-banner" class="map-banner">
+              <div class="map-title">
+                <h1 class="text-uppercase p-4">
+                  <%= map.name %>
+                </h1>
+              </div>
             </div>
           </div>
         </div>
         <div class="row p-3">
           <% agents.forEach(function(a) { %>
-            <div class="col-sm-2 p-2">
-              <img src="<%= a.icon %>" class="agent-image rounded img-fluid" alt="<%= a.name %>" />
+            <div class="agent-image-container col-sm-2 p-2">
+              <form action="/maps/<%= map.name.toLowerCase() %>" method="GET">
+                <button class="agent-button" type="submit">
+                  <img src="<%= a.icon %>" class="agent-image rounded img-fluid" alt="<%= a.name %>" />
+                </button>
+              </form>
             </div>
-            <% }); %>
+          <% }); %>
         </div>
       </div>
       <div class="col-lg-6 col-md-6">
@@ -36,6 +41,9 @@
   <button onclick="deleteSelectedPoints()">Delete Selected Lineup</button>
 
   <script>
+    const mapBanner = document.getElementById('map-banner');
+    mapBanner.style.backgroundImage = "linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%), url(<%= map.image %>)";
+
     const canvas = document.getElementById('minimap-canvas');
     const ctx = canvas.getContext('2d');
     const anchorPairs = [];
