@@ -38,7 +38,7 @@
 
   <button onclick="addAnchorPair()">Add Lineup</button>
   <button onclick="savePoints()">Save Lineup</button>
-  <button onclick="deleteSelectedPoints()">Delete Selected Lineup</button>
+  <button onclick="deleteAnchorPair()">Delete Selected Lineup</button>
 
   <script>
     const mapBanner = document.getElementById('map-banner');
@@ -47,6 +47,7 @@
     const canvas = document.getElementById('minimap-canvas');
     const ctx = canvas.getContext('2d');
     const anchorPairs = [];
+    let hasAnchorPairBeenAdded = false;
     let isDragging = false;
     let selectedAnchorPairIndex = -1;
     let selectedAnchorIndex = -1;
@@ -88,30 +89,35 @@
     }
 
     function getMousePos(evt) {
-      const rect = canvas.getBoundingClientRect();
-      return {
-        x: evt.clientX - rect.left,
-        y: evt.clientY - rect.top
-      };
-    }
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+
+  return {
+    x: (evt.clientX - rect.left) * scaleX,
+    y: (evt.clientY - rect.top) * scaleY
+  };
+}
 
     function handleMouseDown(evt) {
-      const mousePos = getMousePos(evt);
+  const mousePos = getMousePos(evt);
+  isDragging = false; // initialize isDragging as false
+  for(let pairIndex = 0; pairIndex < anchorPairs.length; pairIndex++) { // use a for loop instead of forEach
+    const { anchor1, anchor2 } = anchorPairs[pairIndex];
 
-      anchorPairs.forEach((pair, pairIndex) => {
-        const { anchor1, anchor2 } = pair;
-
-        if (Math.abs(mousePos.x - anchor1.x) <= 5 && Math.abs(mousePos.y - anchor1.y) <= 5) {
-          isDragging = true;
-          selectedAnchorPairIndex = pairIndex;
-          selectedAnchorIndex = 0;
-        } else if (Math.abs(mousePos.x - anchor2.x) <= 5 && Math.abs(mousePos.y - anchor2.y) <= 5) {
-          isDragging = true;
-          selectedAnchorPairIndex = pairIndex;
-          selectedAnchorIndex = 1;
-        }
-      });
+    if (Math.abs(mousePos.x - anchor1.x) <= 50 && Math.abs(mousePos.y - anchor1.y) <= 50) {
+      isDragging = true;
+      selectedAnchorPairIndex = pairIndex;
+      selectedAnchorIndex = 0;
+      break; // break the loop
+    } else if (Math.abs(mousePos.x - anchor2.x) <= 50 && Math.abs(mousePos.y - anchor2.y) <= 50) {
+      isDragging = true;
+      selectedAnchorPairIndex = pairIndex;
+      selectedAnchorIndex = 1;
+      break; // break the loop
     }
+  }
+}
 
     function handleMouseMove(evt) {
       if (!isDragging) return;
@@ -133,14 +139,30 @@
     }
 
     function addAnchorPair() {
-      const newAnchorPair = {
-        anchor1: { x: 500, y: 500, color: 'white', isVisible: true },
-        anchor2: { x: 600, y: 600, color: 'white', isVisible: true },
-        lineColor: 'black',
-      };
-      anchorPairs.push(newAnchorPair);
-      drawImageAndAnchors();
-    }
+  if (anchorPairs.length === 0) {
+    const newAnchorPair = {
+      anchor1: { x: 500, y: 500, color: 'red', isVisible: true },
+      anchor2: { x: 600, y: 600, color: 'blue', isVisible: true },
+      lineColor: 'black',
+    };
+    anchorPairs.push(newAnchorPair);
+    drawImageAndAnchors();
+  } else {
+    console.log("An anchor pair already exists.");
+  }
+}
+
+
+function deleteAnchorPair() {
+  if (anchorPairs.length > 0) {
+    anchorPairs.pop(); // Removes the last (in this case, the only) element
+    drawImageAndAnchors();
+    console.log("Anchor pair deleted.");
+    
+  } else {
+    console.log("No anchor pair to delete.");
+  }
+}
 
     function savePoints() {
       const lineupData = {
@@ -159,14 +181,6 @@
       return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
     }
 
-    function deleteSelectedPoints() {
-      if (selectedAnchorPairIndex >= 0) {
-        anchorPairs.splice(selectedAnchorPairIndex, 1);
-        selectedAnchorPairIndex = -1;
-        selectedAnchorIndex = -1;
-        drawImageAndAnchors();
-      }
-    }
 
     canvas.addEventListener('mousedown', handleMouseDown);
     canvas.addEventListener('mousemove', handleMouseMove);
