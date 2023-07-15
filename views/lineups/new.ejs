@@ -1,20 +1,20 @@
 <%- include('../partials/header') %>
-  <div class="container-fluid">
+  <div class="container-fluid" data-bs-theme="dark">
     <form id="new-form" action="/lineups" method="POST">
       <div class="row">
         <div class="col-lg-6 col-md-6">
           <div class="row">
             <div class="col-lg-6 col-md-6">
               <div class="mb-3">
-                <label for="formGroupExampleInput" class="form-label text-white">Name Lineup</label>
+                <label class="form-label text-white">Name Lineup</label>
                 <input type="text" class="form-control" id="formGroupExampleInput" placeholder="He's defusing!" name="name" />
               </div>
               <div class="mb-3">
-                <label for="formFileMultiple" class="form-label text-white">Upload Images</label>
+                <label class="form-label text-white">Upload Images</label>
                 <input class="form-control" type="file" id="formFileMultiple" multiple name="image" />
               </div>
               <div class="mb-3">
-                <label for="basic-url" class="form-label text-white">Youtube URL</label>
+                <label class="form-label text-white">Youtube URL</label>
                 <div class="input-group">
                   <span class="input-group-text" id="basic-addon3">Youtube</span>
                   <input type="text" class="form-control" id="basic-url" name="url" />
@@ -25,26 +25,30 @@
               </div>
             </div>
             <div class="col-lg-6 col-md-6">
-              <label for="" class="text-white">Select Map</label>
-              <select id="map-select" class="form-select form-select-lg mb-3" name="map" placeholder="Map">
-                <option selected placeholder="Maps"></option>
-                <%- maps.map(m=> `
-                  <option value="${m._id}">${m.name}</option>
-                  `).join('') %>
-              </select>
-
-              <label class="text-white">Select Agent</label>
-              <select id="agent-select" class="form-select form-select-lg mb-3" name="agent">
-                <option selected placeholder="Select Agent"></option>
-                <%- agents.map(a=> `
-                  <option value="${a._id}">${a.name}</option>
-                  `).join('') %>
-              </select>
-              
-              <label class="text-white">Select Abilities</label>
-              <select id="ability-select" class="form-select form-select-lg mb-3" name="ability" disabled>
-                <option selected placeholder="Select Ability"></option>
-              </select>
+              <div class="mb-3">
+                <label class="form-label text-white">Select Map</label>
+                <select id="map-select" class="form-select" name="map" placeholder="Map">
+                  <option selected placeholder="Maps"></option>
+                  <%- maps.map(m=> `
+                    <option value="${m._id}">${m.name}</option>
+                    `).join('') %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-white">Select Agent</label>
+                <select id="agent-select" class="form-select" name="agent">
+                  <option selected placeholder="Select Agent"></option>
+                  <%- agents.map(a=> `
+                    <option value="${a._id}">${a.name}</option>
+                    `).join('') %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-white">Select Abilities</label>
+                <select id="ability-select" class="form-select" name="ability" disabled>
+                  <option selected placeholder="Select Ability"></option>
+                </select>
+              </div>
             </div>
           </div>
           <div class="d-grid gap-2">
