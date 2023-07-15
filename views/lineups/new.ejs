@@ -20,6 +20,9 @@
                   <input type="text" class="form-control" id="basic-url" name="url" />
                 </div>
               </div>
+              <div class="mb-3">
+                <button id="add-marker-btn" class="btn btn-dark form-control" disabled>Add Marker</button>
+              </div>
             </div>
             <div class="col-lg-6 col-md-6">
               <label for="" class="text-white">Select Map</label>
@@ -61,6 +64,7 @@
   <script>
     const mapSelectEl = document.getElementById("map-select");
     const minimapEl = document.getElementById("minimap-img");
+    const addMarkerBtnEl = document.getElementById("add-marker-btn");
     const agentSelectEl = document.getElementById("agent-select");
     const abilitySelectEl = document.getElementById("ability-select");
     agentSelectEl.addEventListener("change", async function (e) {
@@ -86,6 +90,7 @@
     image.onload = drawImageAndAnchors;
 
     mapSelectEl.addEventListener("change", async function (e) {
+      addMarkerBtnEl.removeAttribute("disabled");
       let mapId = e.target.value;
       let response = await fetch(`/api/maps/${mapId}`);
       let data = await response.json();
