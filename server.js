@@ -12,12 +12,12 @@ require('dotenv').config();
 require('./config/database');
 require('./config/passport');
 
-let indexRouter = require('./routes/index');
-let usersRouter = require('./routes/users');
-let agentsRouter = require('./routes/agents');
+let indexRouter = require("./routes/index");
+let usersRouter = require("./routes/users");
+let agentsRouter = require("./routes/agents");
 let lineupsRouter = require("./routes/lineups");
-let mapsRouter = require('./routes/maps');
-let lineupsApiRouter = require('./routes/api/lineups');
+let mapsRouter = require("./routes/maps");
+let lineupsApiRouter = require("./routes/api/lineups");
 
 var app = express();
 
@@ -49,12 +49,12 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use('/', indexRouter);
+app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/agents", agentsRouter);
 app.use("/lineups", lineupsRouter);
-app.use('/maps', mapsRouter);
-app.use('/api/lineups', lineupsApiRouter)
+app.use("/maps", mapsRouter);
+app.use("/api/lineups", lineupsApiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
