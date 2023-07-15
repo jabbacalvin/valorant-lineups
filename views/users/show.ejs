@@ -1,13 +1,8 @@
 <%- include('../partials/header') %>
-<script>
-  const userPage = document.querySelector("body");
-  // userPage.style.backgroundColor = '#2C3034';
-</script>
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <h1><%= title %></h1>
+  <h1 class="text-white"><%= title %></h1>
 </head>
 <br />
 <a href="/lineups/new" type="button" class="btn btn-primary btn-lg"
@@ -16,7 +11,7 @@
 
 <br />
 <br />
-<h2>Lineups</h2>
+<h2 class="text-white">Lineups</h2>
 <table class="table table-borderless">
   <thead>
     <tr>
@@ -34,7 +29,12 @@
       <td><%= l.agent %></td>
       <td><%= l.ability %></td>
       <td>
-        <a href="/lineups/edit/<%= l._id %>" type="button" class="btn btn-secondary">Edit</a>
+        <a
+          href="/lineups/edit/<%= l._id %>"
+          type="button"
+          class="btn btn-secondary"
+          >Edit</a
+        >
         <form action="/" method="POST">
           <a href="" type="button" class="btn btn-danger">Delete</a>
         </form>
@@ -44,7 +44,7 @@
   </tbody>
 </table>
 <br /><br /><br />
-<h2>Favorites</h2>
+<h2 class="text-white">Favorites</h2>
 <table class="table table-borderless">
   <thead>
     <tr>

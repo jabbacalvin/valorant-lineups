@@ -2,14 +2,24 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const abilitySchema = new Schema({
-    name: String,
-    icon: String,
+  name: {
+    type: String,
+    unique: true,
+  },
+  icon: {
+    type: String,
+  },
 });
 
 const agentSchema = new Schema({
-    name: String,
-    icon: String,
-    abilities: [abilitySchema]
+  name: {
+    type: String,
+    unique: true,
+  },
+  icon: {
+    type: String,
+  },
+  abilities: [abilitySchema],
 });
 
 

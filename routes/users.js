@@ -6,5 +6,4 @@ const ensureLoggedIn = require("../config/ensureLoggedIn");
 //GET /users/show
 router.get("/show", ensureLoggedIn, usersCtrl.show);
 
-
 module.exports = router;
