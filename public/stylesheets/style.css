@@ -139,16 +139,20 @@ a {
 }
 
 .abilities-icon {
-  height: 5rem;
-  width: 5rem;
+  width: 3.5rem;
   margin: 0.5rem;
   margin-left: 1rem;
+  object-fit: cover;
 }
 
 #minimap-canvas {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.form-select {
+  cursor: pointer;
 }
 
 @media all and (min-width: 576px) {
