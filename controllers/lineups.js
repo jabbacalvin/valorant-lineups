@@ -23,12 +23,10 @@ async function newLineup(req, res) {
 async function create(req, res) {
   const user = await User.findById(req.params.id);
   const map = await Map.findById(req.params.id);
-  // console.log(map);
   req.body.user = req.user._id;
   try {
     const lineup = await Lineup.create(req.body);
     res.redirect(`/users/show`);
-    // console.log(lineup);
   } catch (err) {
     console.log(err);
     res.render("lineups/new", { errorMsg: err.message });
@@ -38,11 +36,9 @@ async function create(req, res) {
 async function edit(req, res) {
   const maps = await Map.find({});
   const agents = await Agent.find({});
-  // const lineupId = Lineup.findById(req.params.id);
   const lineupInfo = await Lineup.findById(req.params.id)
     .populate("map")
     .populate("agent");
-  // console.log(lineupInfo);
   res.render("lineups/edit", {
     title: "Edit Lineups",
     maps,
@@ -53,8 +49,8 @@ async function edit(req, res) {
 
 async function update(req, res) {
   const lineupData = await Lineup.findById(req.params.id);
-  console.log("UPDATED REQ.BODY", req.body);
-  console.log("UPDATED LINEUP: ", lineupData);
+  // console.log("UPDATED REQ.BODY", req.body);
+  // console.log("UPDATED LINEUP: ", lineupData);
   //update different propertries on lineupdata based on req.body
   lineupData.name = req.body.name;
   lineupData.map = req.body.map;
