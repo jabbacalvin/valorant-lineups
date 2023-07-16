@@ -15,5 +15,4 @@ router.post('/', ensureLoggedIn, lineupsCtrl.create)
 // EDIT /lineups/:id/edit
 router.get('/:id/edit', ensureLoggedIn, lineupsCtrl.edit);
 
-
 module.exports = router;

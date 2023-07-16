@@ -35,8 +35,8 @@
       <td><%= l.ability %></td>
       <td>
         <a href="/lineups/edit/<%= l._id %>" type="button" class="btn btn-secondary">Edit</a>
-        <form action="/" method="POST">
-          <a href="" type="button" class="btn btn-danger">Delete</a>
+        <form action="/lineups/<%= l._id %>?_method=DELETE" method="POST">
+          <button type="submit" form="deleteLineup" class="btn btn-danger">Delete</button>
         </form>
       </td>
     </tr>
