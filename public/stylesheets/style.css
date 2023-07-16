@@ -151,6 +151,10 @@ a {
   object-fit: cover;
 }
 
+.form-select {
+  cursor: pointer;
+}
+
 @media all and (min-width: 576px) {
   .navbar .dropdown-menu-end {
     right: 0;
