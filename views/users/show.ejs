@@ -1,13 +1,8 @@
 <%- include('../partials/header') %>
-<script>
-  const userPage = document.querySelector("body");
-  // userPage.style.backgroundColor = '#2C3034';
-</script>
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <h1><%= title %></h1>
+  <h1 class="text-white"><%= title %></h1>
 </head>
 <br />
 <a href="/lineups/new" type="button" class="btn btn-primary btn-lg"
@@ -16,7 +11,7 @@
 
 <br />
 <br />
-<h2>Lineups</h2>
+<h2 class="text-white">Lineups</h2>
 <table class="table table-borderless">
   <thead>
     <tr>
@@ -27,16 +22,16 @@
     </tr>
   </thead>
   <tbody>
-    <% lineups.forEach(function(l) { %>
+    <% lineups.forEach(function(lineup) { %>
     <tr>
-      <td><%= l.name %></td>
-      <td><%= l.map %></td>
-      <td><%= l.agent %></td>
-      <td><%= l.ability %></td>
+      <td><%= lineup.name %></td>
+      <td><%= lineup.map.name %></td>
+      <td><%= lineup.agent.name %></td>
+      <td><%= lineup.agent.abilities[lineup.agent.abilities.length -1].name %></td>
       <td>
         <a href="/lineups/edit/<%= l._id %>" type="button" class="btn btn-secondary">Edit</a>
-        <form action="/lineups/<%= l._id %>?_method=DELETE" method="POST">
-          <button type="submit" form="deleteLineup" class="btn btn-danger">Delete</button>
+        <form action="/" method="POST">
+          <a href="" type="button" class="btn btn-danger">Delete</a>
         </form>
       </td>
     </tr>
@@ -44,7 +39,7 @@
   </tbody>
 </table>
 <br /><br /><br />
-<h2>Favorites</h2>
+<h2 class="text-white">Favorites</h2>
 <table class="table table-borderless">
   <thead>
     <tr>
@@ -70,4 +65,5 @@
   </tbody>
 </table>
 
+<script></script>
 <%- include('../partials/footer') %>

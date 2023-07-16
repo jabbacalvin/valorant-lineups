@@ -8,5 +8,4 @@ const users = require("../controllers/users");
 router.get("/show", ensureLoggedIn, usersCtrl.show);
 router.delete('/:id', ensureLoggedIn, usersCtrl.delete);
 
-
 module.exports = router;
