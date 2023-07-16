@@ -7,12 +7,10 @@ module.exports = {
 };
 
 async function show(req, res) {
-  const lineups = await Lineup.find(req.params.id)
+  const lineups = await Lineup.find({ user: req.user._id })
     .populate("agent")
-    // .populate("agent.abilities")
     .populate("map");
 
-  // console.log(lineups);
   res.render("users/show", {
     title: "Manage Lineups",
     lineups,
