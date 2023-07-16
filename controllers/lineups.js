@@ -8,6 +8,7 @@ module.exports = {
   create,
   edit,
   update,
+  delete: deleteLineup
 };
 
 async function newLineup(req, res) {
@@ -64,3 +65,11 @@ async function update(req, res) {
   res.redirect("/users/show");
 }
 
+
+async function deleteLineup(req, res) {
+  const lineupData = await Lineup.findById(req.params.id);
+  console.log(lineupData);
+  await Lineup.deleteOne({});
+
+  res.redirect("/users/show");
+}
