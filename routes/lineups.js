@@ -15,4 +15,7 @@ router.get("/edit/:id", ensureLoggedIn, lineupsCtrl.edit);
 // PUT /lineups/edit
 router.put('/:id', ensureLoggedIn, lineupsCtrl.update);
 
+// DELETE /lineups/delete/:id
+router.delete('/:id', ensureLoggedIn, lineupsCtrl.delete);
+
 module.exports = router;
