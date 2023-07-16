@@ -1,72 +1,280 @@
 <%- include('../partials/header') %>
-<h2><%= title %></h2>
-<form id="new-form" action="/lineups" method="POST">
-  <div class="mb-3">
-    <label for="formGroupExampleInput" class="form-label">Name Lineup</label>
-    <input
-      type="text"
-      class="form-control"
-      id="formGroupExampleInput"
-      placeholder="He's defusing!"
-      name="name"
-    />
+  <div class="container-fluid" data-bs-theme="dark">
+    <form id="new-form" class="needs-validation" action="/lineups" method="POST" novalidate>
+      <div class="row">
+        <div class="col-lg-6 col-md-6">
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <div class="mb-3">
+                <label class="form-label text-white">Name Lineup</label>
+                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex: Brimstone molly from A lobby to A default plant " name="name" required />
+                <div class="invalid-feedback">
+                  Please name your lineup!
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-white">Upload Images</label>
+                <input class="form-control" type="file" id="formFileMultiple" multiple name="image" required />
+                <div class="invalid-feedback">
+                  Please upload an image of the lineup.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-white">Youtube URL</label>
+                <div class="input-group">
+                  <span class="input-group-text" id="basic-addon3">Youtube</span>
+                  <input type="text" class="form-control" id="basic-url" name="url" />
+                </div>
+              </div>
+              <div class="mb-3">
+                <button id="add-marker-btn" class="btn btn-dark form-control" disabled>Add Marker</button>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <div class="mb-3">
+                <label class="form-label text-white">Select Map</label>
+                <select id="map-select" class="form-select" name="map" placeholder="Map" required>
+                  <option value="" selected disabled>Maps</option>
+                  <%- maps.map(m=> `
+                    <option value="${m._id}">${m.name}</option>
+                    `).join('') %>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a map.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-white">Select Agent</label>
+                <select id="agent-select" class="form-select" name="agent" required>
+                  <option value="" selected disabled>Select Agent</option>
+                  <%- agents.map(a=> `
+                    <option value="${a._id}">${a.name}</option>
+                    `).join('') %>
+                </select>
+                <div class="invalid-feedback">
+                  Please select an agent.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-white">Select Abilities</label>
+                <select id="ability-select" class="form-select" name="ability" style="cursor: default;" disabled required>
+                  <option value="" selected disabled>Select Ability</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select an agent ability.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="submit">Submit</button>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6">
+          <div id="canvas-container">
+            <img id="minimap-img" hidden />
+            <canvas id="minimap-canvas"></canvas>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
-  <br /><br />
-  <label for="">Select Map</label>
-  <select
-  class="form-select form-select-lg mb-3"
-  aria-label=".form-select-lg example"
-  name="map"
-  >
-  <option selected>Map</option>
-  <option value="1">One</option>
-  <option value="2">Two</option>
-  <option value="3">Three</option>
-</select>
-<br />
-<label for="">Select Agent</label>
-<select
-class="form-select form-select-lg mb-3"
-aria-label=".form-select-lg example"
-name="agent"
->
-<option selected>Agent1</option>
-<option value="1">Agent2</option>
-<option value="2">Agent3</option>
-<option value="3">Agent4</option>
-</select>
-<label for="">Select Abilities</label>
-<select
-class="form-select form-select-sm"
-aria-label=".form-select-sm example"
-name="ability"
->
-<option selected>Abilities</option>
-<option value="1">One</option>
-<option value="2">Two</option>
-<option value="3">Three</option>
-</select>
-<br /><br />
-  <div class="mb-3">
-    <label for="formFileMultiple" class="form-label">Upload Images</label>
-    <input class="form-control" type="file" id="formFileMultiple" multiple name="image" />
-  </div>
-  <div class="mb-3">
-    <label for="basic-url" class="form-label">Youtube URL</label>
-    <div class="input-group">
-      <span class="input-group-text" id="basic-addon3">Youtube</span>
-      <input
-        type="text"
-        class="form-control"
-        id="basic-url"
-        aria-describedby="basic-addon3 basic-addon4"
-        name="url"
-      />
-    </div>
-  </div>
-  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    <button class="btn btn-primary me-md-2" type="submit">Submit</button>
-  </div>
-</form>
 
-<%- include('../partials/footer') %>
+
+  <script>
+    const mapSelectEl = document.getElementById("map-select");
+    const minimapEl = document.getElementById("minimap-img");
+    const addMarkerBtnEl = document.getElementById("add-marker-btn");
+    const agentSelectEl = document.getElementById("agent-select");
+    const abilitySelectEl = document.getElementById("ability-select");
+    agentSelectEl.addEventListener("change", async function (e) {
+      abilitySelectEl.removeAttribute("disabled");
+      abilitySelectEl.innerHTML = `<option value="" selected disabled>Select Ability</option>`;
+      abilitySelectEl.style.cursor = "pointer";
+      let agentId = e.target.value;
+      let response = await fetch(`/api/lineups/${agentId}`);
+      let data = await response.json();
+      data.forEach(function (a) {
+        abilitySelectEl.innerHTML += `<option value='${a._id}'> ${a.name} </option>`
+      });
+    });
+
+    const canvas = document.getElementById('minimap-canvas');
+    const ctx = canvas.getContext('2d');
+    const anchorPairs = [];
+    let hasAnchorPairBeenAdded = false;
+    let isDragging = false;
+    let selectedAnchorPairIndex = -1;
+    let selectedAnchorIndex = -1;
+
+    const image = new Image();
+    image.onload = drawImageAndAnchors;
+
+    mapSelectEl.addEventListener("change", async function (e) {
+      addMarkerBtnEl.removeAttribute("disabled");
+      let mapId = e.target.value;
+      let response = await fetch(`/api/maps/${mapId}`);
+      let data = await response.json();
+      minimapEl.src = data.minimap;
+
+      image.src = document.getElementById("minimap-img").src;
+    });
+
+    function drawImageAndAnchors() {
+      const { naturalWidth, naturalHeight } = image;
+      canvas.width = naturalWidth;
+      canvas.height = naturalHeight;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0);
+      drawAnchorPairs();
+    }
+
+    function drawAnchorPairs() {
+      anchorPairs.forEach((pair, pairIndex) => {
+        const anchor1 = pair.anchor1;
+        const anchor2 = pair.anchor2;
+        const isSelected = pairIndex === selectedAnchorPairIndex;
+
+        ctx.beginPath();
+        ctx.moveTo(anchor1.x, anchor1.y);
+        ctx.lineTo(anchor2.x, anchor2.y);
+        ctx.strokeStyle = isSelected ? "orange" : pair.lineColor;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        [anchor1, anchor2].forEach((anchor) => {
+          if (anchor.isVisible) {
+            ctx.fillStyle = isSelected ? "orange" : anchor.color;
+            ctx.beginPath();
+            ctx.arc(anchor.x, anchor.y, 10, 0, 2 * Math.PI);
+            ctx.fill();
+          }
+        });
+      });
+    }
+
+    function addAnchorPair() {
+      const newAnchorPair = {
+        anchor1: { x: 500, y: 500, color: "red", isVisible: true },
+        anchor2: { x: 600, y: 600, color: "blue", isVisible: true },
+        lineColor: "black",
+      };
+      anchorPairs.push(newAnchorPair);
+      drawImageAndAnchors();
+    }
+
+    function deleteAnchorPair() {
+      if (selectedAnchorPairIndex !== -1) {
+        anchorPairs.splice(selectedAnchorPairIndex, 1);
+        selectedAnchorPairIndex = -1;
+        drawImageAndAnchors();
+      }
+    }
+    function savePoints() {
+      if (selectedAnchorPairIndex === -1) {
+        console.log("No selected lineup to save.");
+        return;
+      }
+
+      const selectedAnchorPair = anchorPairs[selectedAnchorPairIndex];
+
+      const lineupData = {
+        id: generateUniqueId(),
+        anchorPairs: [
+          {
+            anchor1: { ...selectedAnchorPair.anchor1 },
+            anchor2: { ...selectedAnchorPair.anchor2 },
+            lineColor: selectedAnchorPair.lineColor,
+          },
+        ],
+      };
+
+      console.log("Saved Lineup:", lineupData);
+    }
+
+    function generateUniqueId() {
+      return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
+    }
+
+    function getMousePos(evt) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top,
+      };
+    }
+
+    function handleMouseDown(evt) {
+      const mousePos = getMousePos(evt);
+      isDragging = false;
+
+      for (let pairIndex = 0; pairIndex < anchorPairs.length; pairIndex++) {
+        const { anchor1, anchor2 } = anchorPairs[pairIndex];
+
+        if (
+          Math.abs(mousePos.x - anchor1.x) <= 20 &&
+          Math.abs(mousePos.y - anchor1.y) <= 20
+        ) {
+          isDragging = true;
+          selectedAnchorPairIndex = pairIndex;
+          selectedAnchorIndex = 0;
+          break;
+        } else if (
+          Math.abs(mousePos.x - anchor2.x) <= 20 &&
+          Math.abs(mousePos.y - anchor2.y) <= 20
+        ) {
+          isDragging = true;
+          selectedAnchorPairIndex = pairIndex;
+          selectedAnchorIndex = 1;
+          break;
+        }
+      }
+    }
+
+    function handleMouseMove(evt) {
+      if (!isDragging) return;
+
+      const mousePos = getMousePos(evt);
+      const pair = anchorPairs[selectedAnchorPairIndex];
+      const anchor = pair[selectedAnchorIndex === 0 ? "anchor1" : "anchor2"];
+
+      anchor.x = mousePos.x;
+      anchor.y = mousePos.y;
+
+      drawImageAndAnchors();
+    }
+
+    function handleMouseUp(evt) {
+      if (isDragging) {
+        isDragging = false;
+      } else {
+        selectedAnchorPairIndex = -1;
+        selectedAnchorIndex = -1;
+      }
+    }
+
+    // Bootstrap Form Validation
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
+
+  </script>
+
+  <%- include('../partials/footer') %>

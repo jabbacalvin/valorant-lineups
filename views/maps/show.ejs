@@ -1,38 +1,240 @@
 <%- include('../partials/header') %>
 
-  <div class="container-fluid text-center">
-    <div class="clearfix">
+<div class="container-fluid text-center">
+  <div class="clearfix">
     <div class="row">
-      <div class="col-lg-6 col-md-6">
-          <div class="map-image rounded"
-            style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(<%= map.image %>)">
-            <div class="map-title">
-              <h1 class="text-uppercase p-4">
-                <%= map.name %>
-              </h1>
+      <div class="col-lg-5 col-md-5">
+        <div class="row">
+          <div id="map-banner-container">
+            <div id="map-banner" class="map-banner">
+              <div class="map-title">
+                <h1 class="text-uppercase p-4"><%= map.name %></h1>
+              </div>
             </div>
           </div>
+        </div>
+        <div id="agents-container" class="row p-3">
+          <% agents.forEach(function(a) { %>
+          <div class="agent-image-container col-sm-2 p-2">
+            <button class="agent-button" type="submit" data-id="<%= a._id %>">
+              <img
+                src="<%= a.icon %>"
+                class="agent-image rounded img-fluid"
+                alt="<%= a.name %>"
+              />
+            </button>
+          </div>
+          <% }); %>
+        </div>
+        <div class="row">
+          <div id="abilities-container">
+            <h1 class="text-white">ABILITIES</h1>
+            <div id="abilities-img-container">
+
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="col-lg-6 col-md-6">
-        <img id="minimap-img" src="<%= map.minimap %>" hidden>
-        <canvas id="minimap-canvas"></canvas>
+      <div class="col-lg-7 col-md-7">
+        <div id="canvas-container">
+          <img
+            id="minimap-img"
+            src="<%= map.minimap %>"
+            alt="<%= map.name %>"
+            hidden
+          />
+          <canvas id="minimap-canvas"></canvas>
+        </div>
       </div>
     </div>
   </div>
+</div>
 
-  <script>
-    const canvas = document.getElementById("minimap-canvas");
-    const ctx = canvas.getContext("2d");
-    const image = new Image();
-    image.onload = drawImageActualSize;
-    image.src = document.getElementById("minimap-img").src;
+<button onclick="addAnchorPair()">Add Lineup</button>
+<button onclick="savePoints()">Save Lineup</button>
+<button onclick="deleteAnchorPair()">Delete Selected Lineup</button>
 
-    function drawImageActualSize() {
-      canvas.width = this.naturalWidth;
-      canvas.height = this.naturalHeight;
+<script>
+  const agentsEl = document.getElementById('agents-container');
+  const agentEl = document.querySelectorAll('.agent-image');
+  const abilitiesEl = document.getElementById('abilities-container');
+  const abilitiesImgEl = document.getElementById('abilities-img-container');  
+  agentsEl.addEventListener('click', async function(e) {
+    if(e.target.nodeName === "IMG") {
+      abilitiesImgEl.innerHTML = "";
+      agentEl.forEach(e => e.classList.remove('agent-image-focus'));
+      e.target.classList.toggle('agent-image-focus');
+      const agentId = e.target.parentElement.dataset.id;
+      const mapId = '<%= map._id %>';
 
-      ctx.drawImage(this, 0, 0);
+      let response1 = await fetch(`/api/lineups/${agentId}`);
+      let response2 = await fetch(`/api/lineups/${mapId}/${agentId}`);
+
+      let agentAbilities = await response1.json();
+      let lineups = await response2.json();
+      abilitiesEl.style.visibility = 'visible';
+      agentAbilities.forEach(function(a) {
+        abilitiesImgEl.innerHTML += 
+          `<img src="${a.icon}" class="abilities-icon image-fluid" data-id="${a._id}" alt="${a.name}" >`;
+      });
+      abilitiesImgEl.classList.add('col-12');
+
+      // call function to pass data to minimap
     }
-  </script>
+  });
 
-  <%- include('../partials/footer') %>
+  const mapBanner = document.getElementById('map-banner');
+  mapBanner.style.backgroundImage = "linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%), url(<%= map.image %>)";
+
+  const canvas = document.getElementById('minimap-canvas');
+  const ctx = canvas.getContext('2d');
+  const anchorPairs = [];
+  let hasAnchorPairBeenAdded = false;
+  let isDragging = false;
+  let selectedAnchorPairIndex = -1;
+  let selectedAnchorIndex = -1;
+
+  const image = new Image();
+  image.onload = drawImageAndAnchors;
+  image.src = document.getElementById("minimap-img").src;
+
+  function drawImageAndAnchors() {
+    const { naturalWidth, naturalHeight } = image;
+    canvas.width = naturalWidth;
+    canvas.height = naturalHeight;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(image, 0, 0);
+    drawAnchorPairs();
+  }
+
+  function drawAnchorPairs() {
+    anchorPairs.forEach((pair, pairIndex) => {
+      const anchor1 = pair.anchor1;
+      const anchor2 = pair.anchor2;
+      const isSelected = pairIndex === selectedAnchorPairIndex;
+
+      ctx.beginPath();
+      ctx.moveTo(anchor1.x, anchor1.y);
+      ctx.lineTo(anchor2.x, anchor2.y);
+      ctx.strokeStyle = isSelected ? "orange" : pair.lineColor;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      [anchor1, anchor2].forEach((anchor) => {
+        if (anchor.isVisible) {
+          ctx.fillStyle = isSelected ? "orange" : anchor.color;
+          ctx.beginPath();
+          ctx.arc(anchor.x, anchor.y, 10, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+      });
+    });
+  }
+
+  function addAnchorPair() {
+    const newAnchorPair = {
+      anchor1: { x: 500, y: 500, color: "red", isVisible: true },
+      anchor2: { x: 600, y: 600, color: "blue", isVisible: true },
+      lineColor: "black",
+    };
+    anchorPairs.push(newAnchorPair);
+    drawImageAndAnchors();
+  }
+
+  function deleteAnchorPair() {
+    if (selectedAnchorPairIndex !== -1) {
+      anchorPairs.splice(selectedAnchorPairIndex, 1);
+      selectedAnchorPairIndex = -1;
+      drawImageAndAnchors();
+    }
+  }
+  function savePoints() {
+    if (selectedAnchorPairIndex === -1) {
+      console.log("No selected lineup to save.");
+      return;
+    }
+
+    const selectedAnchorPair = anchorPairs[selectedAnchorPairIndex];
+
+    const lineupData = {
+      id: generateUniqueId(),
+      anchorPairs: [
+        {
+          anchor1: { ...selectedAnchorPair.anchor1 },
+          anchor2: { ...selectedAnchorPair.anchor2 },
+          lineColor: selectedAnchorPair.lineColor,
+        },
+      ],
+    };
+
+    console.log("Saved Lineup:", lineupData);
+  }
+
+  function generateUniqueId() {
+    return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
+  }
+
+  function getMousePos(evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top,
+    };
+  }
+
+  function handleMouseDown(evt) {
+    const mousePos = getMousePos(evt);
+    isDragging = false;
+
+    for (let pairIndex = 0; pairIndex < anchorPairs.length; pairIndex++) {
+      const { anchor1, anchor2 } = anchorPairs[pairIndex];
+
+      if (
+        Math.abs(mousePos.x - anchor1.x) <= 20 &&
+        Math.abs(mousePos.y - anchor1.y) <= 20
+      ) {
+        isDragging = true;
+        selectedAnchorPairIndex = pairIndex;
+        selectedAnchorIndex = 0;
+        break;
+      } else if (
+        Math.abs(mousePos.x - anchor2.x) <= 20 &&
+        Math.abs(mousePos.y - anchor2.y) <= 20
+      ) {
+        isDragging = true;
+        selectedAnchorPairIndex = pairIndex;
+        selectedAnchorIndex = 1;
+        break;
+      }
+    }
+  }
+
+  function handleMouseMove(evt) {
+    if (!isDragging) return;
+
+    const mousePos = getMousePos(evt);
+    const pair = anchorPairs[selectedAnchorPairIndex];
+    const anchor = pair[selectedAnchorIndex === 0 ? "anchor1" : "anchor2"];
+
+    anchor.x = mousePos.x;
+    anchor.y = mousePos.y;
+
+    drawImageAndAnchors();
+  }
+
+  function handleMouseUp(evt) {
+    if (isDragging) {
+      isDragging = false;
+    } else {
+      selectedAnchorPairIndex = -1;
+      selectedAnchorIndex = -1;
+    }
+  }
+
+  canvas.addEventListener("mousedown", handleMouseDown);
+  canvas.addEventListener("mousemove", handleMouseMove);
+  canvas.addEventListener("mouseup", handleMouseUp);
+</script>
+
+<%- include('../partials/footer') %>

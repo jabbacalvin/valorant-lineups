@@ -7,39 +7,152 @@ a {
   color: #00b7ff;
 }
 
+.avatar {
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
 .map {
   position: relative;
 }
 
-.map-img {
-  position: relative;
+.map-img-container {
+  display: inline-block;
+  overflow: hidden;
 }
 
 .map-name {
   position: absolute;
   color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 75%;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+  transition: top 0.5s, visibility 0.3s, opacity 0.5s;
+}
+
+.open-map {
+  position: absolute;
+  border: solid white;
+  border-radius: 0.5rem;
+  background-color: rgb(255, 255, 255, 0.3);
+  font-size: 1.25rem;
+  padding: 0.3rem 1rem;
+  color: white;
   z-index: 10;
   transform: translate(-50%, -50%);
   left: 50%;
   top: 75%;
+  pointer-events: none;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: top 0.5s, visibility 0.3s, opacity 0.5s;
 }
 
-.map-image {
+.map-img {
+  position: relative;
+  transition: transform .4s;
+}
+
+.map-img:hover {
+  transform: scale(1.1);
+  transform-origin: 50% 50%;
+}
+
+.map-img-container:hover span.map-name {
+  top: 50%;
+  opacity: 0;
+  visibility: hidden;
+  transition: top 0.5s, visibility 0.3s, opacity 0.5s;
+}
+
+.map-img-container:hover span.open-map {
+  top: 50%;
+  opacity: 1;
+  visibility: visible;
+  transition: top 0.5s, visibility 0.3s, opacity 0.5s;
+}
+
+.map-button {
+  position: relative;
+  background: transparent;
+  border: none !important;
+}
+
+#map-banner-container {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0;
+  border-radius: 0.5rem;
+}
+
+.map-banner {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
+  transition: transform .4s;
+  transform: scale(1.2);
+}
 
+.map-banner:hover {
+  transform: scale(1.4);
+  transform-origin: 50% 50%;
 }
 
 .map-title {
   color: white;
+  pointer-events: none;
+}
+
+.agent-image {
+  opacity: 0.5;
+  transition: transform 0.4s;
+}
+
+.agent-image:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.agent-image-focus {
+  opacity: 1;
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.agent-button {
+  position: relative;
+  background: transparent;
+  border: none !important;
+}
+
+#abilities-container {
+  visibility: hidden;
+  height: 8rem;
+}
+
+.abilities-icon {
+  width: 3.5rem;
+  margin: 0.5rem;
+  margin-left: 1rem;
+  object-fit: cover;
 }
 
 #minimap-canvas {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.form-select {
+  cursor: pointer;
 }
 
 @media all and (min-width: 576px) {

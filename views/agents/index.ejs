@@ -1,0 +1,20 @@
+<%- include('../partials/header') %>
+
+    <h1 class="text-uppercase text-center">
+        <%= title %>
+    </h1>
+    <div class="container-fluid">
+        <% agents.forEach(function(a) { %>
+            <div class="agents row justify-content-center">
+                <div class="agent col-10 col-md-3 p-2">
+                    <a href="/agents/<%= a._id %>">
+                        <img src="<%= a.icon %>" class="rounded img-fluid agent-img" />
+                        <span class="a.name fs-3">
+                            <%= a.name %>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <% }); %>
+    </div>
+    <%- include('../partials/footer') %>

@@ -1,13 +1,8 @@
 <%- include('../partials/header') %>
-<script>
-  const userPage = document.querySelector("body");
-  // userPage.style.backgroundColor = '#2C3034';
-</script>
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <h1><%= title %></h1>
+  <h1 class="text-white"><%= title %></h1>
 </head>
 <br />
 <a href="/lineups/new" type="button" class="btn btn-primary btn-lg"
@@ -16,36 +11,41 @@
 
 <br />
 <br />
-<h2>Lineups</h2>
-<table class="table table-borderless">
+<h2 class="text-white">Lineups</h2>
+<table class="table table-borderless table-secondary">
   <thead>
     <tr>
-      <th scope="col">#</th>
       <th scope="col">Lineup Name</th>
       <th scope="col">Map</th>
       <th scope="col">Agent</th>
       <th scope="col">Ability</th>
+      <th scope="col">Action</th>
     </tr>
   </thead>
   <tbody>
-      <tr>
-          <th scope="row">id</th>
-          <td>name</td>
-          <td>map_id</td>
-          <td>agent_id</td>
-          <td>ability_id</td>
-          <td>
-            <form action="" method="POST">
-              <a href="" type="button" class="btn btn-secondary">Edit</a>
-              <a href="" type="button" class="btn btn-danger">Delete</a>
-            </form>
-          </td>
-        </tr>
-
+    <% lineups.forEach(function(lineup) { %>
+    <tr>
+      <td><%= lineup.name %></td>
+      <td><%= lineup.map.name %></td>
+      <td><%= lineup.agent.name %></td>
+      <td><%= lineup.agent.abilities[lineup.agent.abilities.length -1].name %></td>
+      <td>
+        <a
+          href="/lineups/edit/<%= lineup._id %>"
+          type="button"
+          class="btn btn-secondary"
+          >Edit</a
+        >
+        <form action="/" method="POST">
+          <a href="" type="button" class="btn btn-danger">Delete</a>
+        </form>
+      </td>
+    </tr>
+    <% }) %>
   </tbody>
 </table>
 <br /><br /><br />
-<h2>Favorites</h2>
+<h2 class="text-white">Favorites</h2>
 <table class="table table-borderless">
   <thead>
     <tr>
@@ -71,4 +71,5 @@
   </tbody>
 </table>
 
+<script></script>
 <%- include('../partials/footer') %>

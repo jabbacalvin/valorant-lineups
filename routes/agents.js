@@ -3,6 +3,7 @@ var router = express.Router();
 const agentsCtrl = require("../controllers/agents");
 
 //GET /agents
-router.get('/', agentsCtrl.show);
+router.get('/', agentsCtrl.index);
+router.get('/:id', agentsCtrl.show);
 
 module.exports = router;

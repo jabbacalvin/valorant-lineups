@@ -1,19 +1,26 @@
 <%- include('../partials/header') %>
-  <div class="container-fluid">    
-    <% mapGrid.forEach(function(row) { %>
-      <div class="maps row justify-content-center">
-        <% row.forEach(function(col) { %>
-          <div class="map col-10 col-md-3 p-2">
-            <a href="/maps/<%= col._id %>">
-              <img src="<%= col.image %>" class="rounded img-fluid map-img" />
-              <span class="map-name fs-3">
-                <%= col.name %>
-              </span>
-            </a>
-          </div>
-          <% }); %>
-      </div>
-    <% }); %>
+  <div class="container-xl">
+    <div class="row">
+      <% maps.forEach(function(m) { %>
+        <div class="map col-lg-4 col-md-4 col-sm-6 p-2">
+          <form action="/maps/<%= m.name.toLowerCase() %>" method="POST">
+            <input name="id" value="<%= m.id %>" type="hidden">
+            <button class="map-button" type="submit">
+              <div class="map-img-container rounded">
+                <img src="<%= m.image %>" class="img-fluid map-img" alt="<%= m.name %>" />
+                <span class="map-name">
+                  <%= m.name %>
+                </span>
+                <span class="open-map">
+                  Open Map
+                </span>
+              </div>
+            </button>
+          </form>
+          </a>
+        </div>
+      <% }); %>
+    </div>
   </div>
   
 
