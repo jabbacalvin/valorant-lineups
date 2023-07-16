@@ -1,17 +1,23 @@
 <%- include('../partials/header') %>
   <div class="container-fluid" data-bs-theme="dark">
-    <form id="new-form" action="/lineups" method="POST">
+    <form id="new-form" class="needs-validation" action="/lineups" method="POST" novalidate>
       <div class="row">
         <div class="col-lg-6 col-md-6">
           <div class="row">
             <div class="col-lg-6 col-md-6">
               <div class="mb-3">
                 <label class="form-label text-white">Name Lineup</label>
-                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="He's defusing!" name="name" />
+                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Ex: Brimstone molly from A lobby to A default plant " name="name" required />
+                <div class="invalid-feedback">
+                  Please name your lineup!
+                </div>
               </div>
               <div class="mb-3">
                 <label class="form-label text-white">Upload Images</label>
-                <input class="form-control" type="file" id="formFileMultiple" multiple name="image" />
+                <input class="form-control" type="file" id="formFileMultiple" multiple name="image" required />
+                <div class="invalid-feedback">
+                  Please upload an image of the lineup.
+                </div>
               </div>
               <div class="mb-3">
                 <label class="form-label text-white">Youtube URL</label>
@@ -27,32 +33,41 @@
             <div class="col-lg-6 col-md-6">
               <div class="mb-3">
                 <label class="form-label text-white">Select Map</label>
-                <select id="map-select" class="form-select" name="map" placeholder="Map">
-                  <option selected placeholder="Maps"></option>
+                <select id="map-select" class="form-select" name="map" placeholder="Map" required>
+                  <option value="" selected disabled>Maps</option>
                   <%- maps.map(m=> `
                     <option value="${m._id}">${m.name}</option>
                     `).join('') %>
                 </select>
+                <div class="invalid-feedback">
+                  Please select a map.
+                </div>
               </div>
               <div class="mb-3">
                 <label class="form-label text-white">Select Agent</label>
-                <select id="agent-select" class="form-select" name="agent">
-                  <option selected placeholder="Select Agent"></option>
+                <select id="agent-select" class="form-select" name="agent" required>
+                  <option value="" selected disabled>Select Agent</option>
                   <%- agents.map(a=> `
                     <option value="${a._id}">${a.name}</option>
                     `).join('') %>
                 </select>
+                <div class="invalid-feedback">
+                  Please select an agent.
+                </div>
               </div>
               <div class="mb-3">
                 <label class="form-label text-white">Select Abilities</label>
-                <select id="ability-select" class="form-select" name="ability" disabled>
-                  <option selected placeholder="Select Ability"></option>
+                <select id="ability-select" class="form-select" name="ability" style="cursor: default;" disabled required>
+                  <option value="" selected disabled>Select Ability</option>
                 </select>
+                <div class="invalid-feedback">
+                  Please select an agent ability.
+                </div>
               </div>
             </div>
           </div>
           <div class="d-grid gap-2">
-            <button class="btn btn-primary form-control" type="submit">Submit</button>
+            <button class="btn btn-primary" type="submit">Submit</button>
           </div>
         </div>
         <div class="col-lg-6 col-md-6">
@@ -73,10 +88,12 @@
     const abilitySelectEl = document.getElementById("ability-select");
     agentSelectEl.addEventListener("change", async function (e) {
       abilitySelectEl.removeAttribute("disabled");
-      abilitySelectEl.innerHTML = '';
+      abilitySelectEl.innerHTML = `<option value="" selected disabled>Select Ability</option>`;
+      abilitySelectEl.style.cursor = "pointer";
       let agentId = e.target.value;
       let response = await fetch(`/api/lineups/${agentId}`);
       let data = await response.json();
+      
       data.forEach(function (a) {
         abilitySelectEl.innerHTML += `<option value='${a._id}'> ${a.name} </option>`
       });
@@ -236,6 +253,27 @@
         selectedAnchorIndex = -1;
       }
     }
+
+    // Bootstrap Form Validation
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
 
   </script>
 
