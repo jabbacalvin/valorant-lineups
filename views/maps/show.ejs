@@ -29,9 +29,7 @@
         <div class="row">
           <div id="abilities-container">
             <h1 class="text-white">ABILITIES</h1>
-            <div id="abilities-img-container">
-
-            </div>
+            <div id="abilities-img-container"></div>
           </div>
         </div>
       </div>
@@ -55,44 +53,46 @@
 <button onclick="deleteAnchorPair()">Delete Selected Lineup</button>
 
 <script>
-  const agentsEl = document.getElementById('agents-container');
-  const agentEl = document.querySelectorAll('.agent-image');
-  const abilitiesEl = document.getElementById('abilities-container');
-  const abilitiesImgEl = document.getElementById('abilities-img-container');  
-  agentsEl.addEventListener('click', async function(e) {
-    if(e.target.nodeName === "IMG") {
+  const agentsEl = document.getElementById("agents-container");
+  const agentEl = document.querySelectorAll(".agent-image");
+  const abilitiesEl = document.getElementById("abilities-container");
+  const abilitiesImgEl = document.getElementById("abilities-img-container");
+  agentsEl.addEventListener("click", async function (e) {
+    if (e.target.nodeName === "IMG") {
       abilitiesImgEl.innerHTML = "";
-      agentEl.forEach(e => e.classList.remove('agent-image-focus'));
-      e.target.classList.toggle('agent-image-focus');
+      agentEl.forEach((e) => e.classList.remove("agent-image-focus"));
+      e.target.classList.toggle("agent-image-focus");
       const agentId = e.target.parentElement.dataset.id;
-      const mapId = '<%= map._id %>';
+      const mapId = "<%= map._id %>";
 
       let response1 = await fetch(`/api/lineups/${agentId}`);
       let response2 = await fetch(`/api/lineups/${mapId}/${agentId}`);
 
       let agentAbilities = await response1.json();
       let lineups = await response2.json();
-      abilitiesEl.style.visibility = 'visible';
-      agentAbilities.forEach(function(a) {
-        abilitiesImgEl.innerHTML += 
-          `<img src="${a.icon}" class="abilities-icon image-fluid" data-id="${a._id}" alt="${a.name}" >`;
+      abilitiesEl.style.visibility = "visible";
+      agentAbilities.forEach(function (a) {
+        abilitiesImgEl.innerHTML += `<img src="${a.icon}" class="abilities-icon image-fluid" data-id="${a._id}" alt="${a.name}" >`;
       });
-      abilitiesImgEl.classList.add('col-12');
+      abilitiesImgEl.classList.add("col-12");
 
       // call function to pass data to minimap
     }
   });
 
-  const mapBanner = document.getElementById('map-banner');
-  mapBanner.style.backgroundImage = "linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%), url(<%= map.image %>)";
+  const mapBanner = document.getElementById("map-banner");
+  mapBanner.style.backgroundImage =
+    "linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%), url(<%= map.image %>)";
 
-  const canvas = document.getElementById('minimap-canvas');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.getElementById("minimap-canvas");
+  const ctx = canvas.getContext("2d");
   const anchorPairs = [];
   let hasAnchorPairBeenAdded = false;
   let isDragging = false;
   let selectedAnchorPairIndex = -1;
   let selectedAnchorIndex = -1;
+  let scale = 1;
+  let totalTranslation = { x: 0, y: 0 };
 
   const image = new Image();
   image.onload = drawImageAndAnchors;
@@ -104,8 +104,17 @@
     canvas.height = naturalHeight;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save();
+
+    ctx.translate(totalTranslation.x, totalTranslation.y);
+    ctx.scale(scale, scale);
+    ctx.translate(-totalTranslation.x, -totalTranslation.y);
+
     ctx.drawImage(image, 0, 0);
     drawAnchorPairs();
+
+    ctx.restore();
   }
 
   function drawAnchorPairs() {
@@ -118,23 +127,22 @@
       ctx.moveTo(anchor1.x, anchor1.y);
       ctx.lineTo(anchor2.x, anchor2.y);
       ctx.strokeStyle = isSelected ? "orange" : pair.lineColor;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2 / scale; // adjust line width with the scale
       ctx.stroke();
 
       [anchor1, anchor2].forEach((anchor) => {
         if (anchor.isVisible) {
           ctx.fillStyle = isSelected ? "orange" : anchor.color;
           ctx.beginPath();
-          ctx.arc(anchor.x, anchor.y, 10, 0, 2 * Math.PI);
+          ctx.arc(anchor.x, anchor.y, 10 / scale, 0, 2 * Math.PI); // adjust the anchor radius with the scale
           ctx.fill();
         }
       });
     });
   }
-
   function addAnchorPair() {
     const newAnchorPair = {
-      anchor1: { x: 500, y: 500, color: "red", isVisible: true },
+      anchor1: { x: 500, y: 500, color: "red", isVisible: true,  },
       anchor2: { x: 600, y: 600, color: "blue", isVisible: true },
       lineColor: "black",
     };
@@ -143,32 +151,26 @@
   }
 
   function deleteAnchorPair() {
-    if (selectedAnchorPairIndex !== -1) {
-      anchorPairs.splice(selectedAnchorPairIndex, 1);
-      selectedAnchorPairIndex = -1;
+    if (anchorPairs.length > 0) {
+      anchorPairs.pop(); // Removes the last (in this case, the only) element
       drawImageAndAnchors();
+      console.log("Anchor pair deleted.");
+    } else {
+      console.log("No anchor pair to delete.");
     }
   }
+
   function savePoints() {
-    if (selectedAnchorPairIndex === -1) {
-      console.log("No selected lineup to save.");
-      return;
-    }
-
-    const selectedAnchorPair = anchorPairs[selectedAnchorPairIndex];
-
     const lineupData = {
       id: generateUniqueId(),
-      anchorPairs: [
-        {
-          anchor1: { ...selectedAnchorPair.anchor1 },
-          anchor2: { ...selectedAnchorPair.anchor2 },
-          lineColor: selectedAnchorPair.lineColor,
-        },
-      ],
+      anchorPairs: anchorPairs.map((pair) => ({
+        anchor1: { ...pair.anchor1 },
+        anchor2: { ...pair.anchor2 },
+        lineColor: pair.lineColor,
+      })),
     };
 
-    console.log("Saved Lineup:", lineupData);
+    console.log("Saved Lineup:", lineupData.anchorPairs);
   }
 
   function generateUniqueId() {
@@ -177,35 +179,42 @@
 
   function getMousePos(evt) {
     const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width / scale; // incorporate the scale
+    const scaleY = canvas.height / rect.height / scale; // incorporate the scale
+
     return {
-      x: evt.clientX - rect.left,
-      y: evt.clientY - rect.top,
+      x: (evt.clientX - rect.left) * scaleX - totalTranslation.x / scale,
+      y: (evt.clientY - rect.top) * scaleY - totalTranslation.y / scale,
     };
   }
 
   function handleMouseDown(evt) {
     const mousePos = getMousePos(evt);
-    isDragging = false;
+    isDragging = false; // initialize isDragging as false
 
     for (let pairIndex = 0; pairIndex < anchorPairs.length; pairIndex++) {
+      // use a for loop instead of forEach
       const { anchor1, anchor2 } = anchorPairs[pairIndex];
 
       if (
-        Math.abs(mousePos.x - anchor1.x) <= 25 &&
-        Math.abs(mousePos.y - anchor1.y) <= 25
+        Math.abs(mousePos.x - anchor1.x) <= 10 / scale && // Adjusted for anchor point size and scale
+        Math.abs(mousePos.y - anchor1.y) <= 10 / scale
+        
       ) {
         isDragging = true;
         selectedAnchorPairIndex = pairIndex;
         selectedAnchorIndex = 0;
-        break;
+        break; // break the loop
       } else if (
-        Math.abs(mousePos.x - anchor2.x) <= 25 &&
-        Math.abs(mousePos.y - anchor2.y) <= 25
+
+        Math.abs(mousePos.x - anchor2.x) <= 10 / scale && // Adjusted for anchor point size and scale
+        Math.abs(mousePos.y - anchor2.y) <= 10 / scale
+
       ) {
         isDragging = true;
         selectedAnchorPairIndex = pairIndex;
         selectedAnchorIndex = 1;
-        break;
+        break; // break the loop
       }
     }
   }
@@ -224,12 +233,9 @@
   }
 
   function handleMouseUp(evt) {
-    if (isDragging) {
-      isDragging = false;
-    } else {
-      selectedAnchorPairIndex = -1;
-      selectedAnchorIndex = -1;
-    }
+    isDragging = false;
+    selectedAnchorPairIndex = -1;
+    selectedAnchorIndex = -1;
   }
 
   canvas.addEventListener("mousedown", handleMouseDown);
