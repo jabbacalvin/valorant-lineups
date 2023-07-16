@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const lineups = require("../controllers/lineups");
 const Schema = mongoose.Schema;
 
 module.exports = {

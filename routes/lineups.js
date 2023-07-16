@@ -6,14 +6,16 @@ const ensureLoggedIn = require("../config/ensureLoggedIn");
 // GET /lineups/new
 router.get("/new", ensureLoggedIn, lineupsCtrl.new);
 
-// GET /lineups/:id
-// router.get('/show', ensureLoggedIn, lineupsCtrl.show);
-
 // POST /lineups
-router.post('/', ensureLoggedIn, lineupsCtrl.create)
+router.post("/", ensureLoggedIn, lineupsCtrl.create);
 
-// EDIT /lineups/:id/edit
-router.get('/:id/edit', ensureLoggedIn, lineupsCtrl.edit);
+// EDIT /lineups/edit/:id
+router.get("/edit/:id", ensureLoggedIn, lineupsCtrl.edit);
 
+// PUT /lineups/edit
+router.put('/:id', ensureLoggedIn, lineupsCtrl.update);
+
+// DELETE /lineups/delete/:id
+router.delete('/:id', ensureLoggedIn, lineupsCtrl.delete);
 
 module.exports = router;

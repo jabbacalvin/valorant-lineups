@@ -4,28 +4,20 @@ const Map = require("../models/map");
 const Agent = require("../models/agent");
 
 module.exports = {
-  // show,
   new: newLineup,
   create,
   edit,
+  update,
+  delete: deleteLineup
 };
-
-// async function show(req, res) {
-//   const lineups = await Lineup.find({});
-//   console.log(lineups);
-//   res.render("user/show", { lineups });
-// }
 
 async function newLineup(req, res) {
   const maps = await Map.find({});
   const agents = await Agent.find({});
-  const agentAbilities = await Agent.find({ abilities: [] });
-  console.log(agentAbilities);
   res.render("lineups/new", {
     title: "Add New Lineup",
     maps,
     agents,
-    agentAbilities,
   });
 }
 
@@ -35,7 +27,6 @@ async function create(req, res) {
   req.body.user = req.user._id;
   try {
     const lineup = await Lineup.create(req.body);
-    // console.log(lineup);
     res.redirect(`/users/show`);
   } catch (err) {
     console.log(err);
@@ -43,8 +34,42 @@ async function create(req, res) {
   }
 }
 
-function edit(req, res) {
-  const lineup = Lineup.getOne(req.params.id);
-  console.log(lineup);
-  res.render(`lineups/edit/${lineup._id}`, { title: "Edit Lineups", lineup });
+async function edit(req, res) {
+  const maps = await Map.find({});
+  const agents = await Agent.find({});
+  const lineupInfo = await Lineup.findById(req.params.id)
+    .populate("map")
+    .populate("agent");
+  res.render("lineups/edit", {
+    title: "Edit Lineups",
+    maps,
+    agents,
+    lineupInfo,
+  });
+}
+
+async function update(req, res) {
+  const lineupData = await Lineup.findById(req.params.id);
+  // console.log("UPDATED REQ.BODY", req.body);
+  // console.log("UPDATED LINEUP: ", lineupData);
+  //update different propertries on lineupdata based on req.body
+  lineupData.name = req.body.name;
+  lineupData.map = req.body.map;
+  lineupData.agent = req.body.agent;
+  lineupData.image = req.body.image;
+  lineupData.url = req.body.url;
+  await Lineup.updateMany(req.body, req.params.id);
+  //save
+  await lineupData.save();
+
+  res.redirect("/users/show");
+}
+
+
+async function deleteLineup(req, res) {
+  const lineupData = await Lineup.findById(req.params.id);
+  console.log(lineupData);
+  await Lineup.deleteOne({});
+
+  res.redirect("/users/show");
 }
