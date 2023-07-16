@@ -1,28 +1,28 @@
 <%- include('../partials/header') %>
 <h2 class="text-white"><%= title %></h2>
 <div class="container-fluid">
-  <form id="new-form" action="/lineups/?_method=PUT" method="POST">
+  <form id="new-form" action="/lineups/<%= lineupInfo._id %>?_method=PUT" method="POST">
     <div class="col-lg-6 col-md-6">
-
+      
       <div class="mb-3">
-        <label for="formGroupExampleInput" class="form-label text-white">Name Lineup</label>
-        <input
-        type="text"
-        class="form-control"
-        id="formGroupExampleInput"
-        placeholder="He's defusing!"
-        name="name"
-        />
-      </div>
-      <br />
-      <label for="" class="text-white">Select Map</label>
-      <select
-    class="form-select form-select-lg mb-3"
-    aria-label=".form-select-lg example"
-    name="map"
+    <label for="formGroupExampleInput" class="form-label text-white">Name Lineup</label>
+    <input
+    type="text"
+    class="form-control"
+    id="formGroupExampleInput"
+    placeholder="He's defusing!"
+    name="name" value="<%= lineupInfo.name %>"
+    />
+  </div>
+  <br />
+  <label for="" class="text-white">Select Map</label>
+  <select
+  class="form-select form-select-lg mb-3"
+  aria-label=".form-select-lg example"
+  name="map"
     placeholder="Map"
     >
-    <option selected placeholder="Map"></option>
+    <option selected placeholder="Map"><%= lineupInfo.map.name %></option>
     <%- maps.map(m => `
     <option value="${m._id}">${m.name}</option>
     `).join('') %>
@@ -36,7 +36,7 @@
   aria-label=".form-select-lg example"
   name="agent"
   >
-  <option selected placeholder="Agent"></option>
+  <option selected placeholder="Agent"><%= lineupInfo.agent.name %></option>
   <%- agents.map(a => `
     <option value="${a._id}">${a.name}</option>
     `).join('') %>
@@ -71,14 +71,14 @@
     type="text"
     class="form-control"
     id="basic-url"
-      aria-describedby="basic-addon3 basic-addon4"
-      name="url"
-      />
-    </div>
+    aria-describedby="basic-addon3 basic-addon4"
+    name="url"
+    />
   </div>
-  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    <button class="btn btn-primary me-md-2" type="submit">Submit</button>
-  </div>
+</div>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <button class="btn btn-primary me-md-2" type="submit">Submit</button>
+</div>
 </div>
 <div class="col-lg-6 col-md-6"></div>
 </form>

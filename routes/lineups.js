@@ -12,4 +12,7 @@ router.post("/", ensureLoggedIn, lineupsCtrl.create);
 // EDIT /lineups/edit/:id
 router.get("/edit/:id", ensureLoggedIn, lineupsCtrl.edit);
 
+// PUT /lineups/edit
+router.put('/:id', ensureLoggedIn, lineupsCtrl.update);
+
 module.exports = router;
