@@ -27,14 +27,24 @@ async function create(req, res) {
   try {
     const lineup = await Lineup.create(req.body);
     res.redirect(`/users/show`);
+    // console.log(lineup);
   } catch (err) {
     console.log(err);
     res.render("lineups/new", { errorMsg: err.message });
   }
 }
 
-function edit(req, res) {
-  const lineup = Lineup.getOne(req.params.id);
-  console.log(lineup);
-  res.render(`lineups/edit/${lineup._id}`, { title: "Edit Lineups", lineup });
+async function edit(req, res) {
+  const maps = await Map.find({});
+  const agents = await Agent.find({});
+  // const lineupId = Lineup.findById(req.params.id);
+  const lineupId = await Lineup.findById(req.params.id);
+  // console.log(lineupId._id.toHexString());
+  res.render("lineups/edit", {
+    title: "Edit Lineups",
+    maps,
+    agents,
+    lineupId,
+  });
 }
+

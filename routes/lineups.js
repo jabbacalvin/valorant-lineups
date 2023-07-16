@@ -9,7 +9,7 @@ router.get("/new", ensureLoggedIn, lineupsCtrl.new);
 // POST /lineups
 router.post("/", ensureLoggedIn, lineupsCtrl.create);
 
-// EDIT /lineups/:id/edit
-// router.get("/:id/edit", ensureLoggedIn, lineupsCtrl.edit);
+// EDIT /lineups/edit/:id
+router.get("/edit/:id", ensureLoggedIn, lineupsCtrl.edit);
 
 module.exports = router;

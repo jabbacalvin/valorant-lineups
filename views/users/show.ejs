@@ -22,15 +22,16 @@
     </tr>
   </thead>
   <tbody>
-    <% lineups.forEach(function(l) { %>
+    <% lineups.forEach(function(lineup) { %>
     <tr>
-      <td><%= l.name %></td>
-      <td><%= l.map %></td>
-      <td><%= l.agent %></td>
-      <td><%= l.ability %></td>
+      <td><%= lineup.name %></td>
+      <td><%= lineup.map.name %></td>
+      <td><%= lineup.agent.name %></td>
+      <td><%= lineup.agent.abilities[lineup.agent.abilities.length -1].name %></td>
+      <%= console.log(lineup.agent) %>
       <td>
         <a
-          href="/lineups/edit/<%= l._id %>"
+          href="/lineups/edit/<%= lineup._id %>"
           type="button"
           class="btn btn-secondary"
           >Edit</a
@@ -70,4 +71,5 @@
   </tbody>
 </table>
 
+<script></script>
 <%- include('../partials/footer') %>
