@@ -27,7 +27,10 @@ async function create(req, res) {
   req.body.createdBy = req.user._id;
   try {
     const lineup = await Lineup.create(req.body);
+    console.log(req.body);
+
     res.redirect(`/users/show`);
+
   } catch (err) {
     console.log(err);
     res.render("lineups/new", { errorMsg: err.message });
