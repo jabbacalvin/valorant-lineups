@@ -7,6 +7,10 @@ a {
   color: #00b7ff;
 }
 
+.navbar {
+  height: 5rem;
+}
+
 .navbar-brand {
   position: absolute;
   left: 50%;
