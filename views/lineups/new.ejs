@@ -161,6 +161,13 @@
   });
   addMarkerBtnEl.addEventListener("click", function (e) {
     addAnchorPair();
+    addMarkerBtnEl.hidden = true;
+    deleteMarkerBtnEl.hidden = false;
+  });
+  deleteMarkerBtnEl.addEventListener("click", function (e) {
+    deleteAnchorPair();
+    addMarkerBtnEl.hidden = false;
+    deleteMarkerBtnEl.hidden = true;
   });
   submitBtnEl.addEventListener("click", function (e) {
     savePoints();
@@ -232,8 +239,8 @@
   }
   function addAnchorPair() {
     const newAnchorPair = {
-      anchor1: { x: 500, y: 500, color: "red", isVisible: true },
-      anchor2: { x: 600, y: 600, color: "blue", isVisible: true },
+      anchor1: { x: 500, y: 500, color: "lightgreen", isVisible: true },
+      anchor2: { x: 600, y: 600, color: "red", isVisible: true },
       lineColor: "black",
     };
     anchorPairs.push(newAnchorPair);
