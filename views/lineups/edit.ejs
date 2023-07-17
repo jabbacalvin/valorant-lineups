@@ -133,7 +133,6 @@
 
       let response = await fetch(`/api/lineups/${lineupId}`);
       let lineup = await response.json();
-      console.log(lineup);
       let startX, startY, endX, endY;
       startX = lineup.coordinates[0].x;
       startY = lineup.coordinates[0].y;

@@ -1,5 +1,4 @@
-# Valorant Lineups
-
+# Touch Grass
 ## Trello Board
 [Trello Board Link](https://trello.com/b/8m6BGM9d/project-2)
 
@@ -14,22 +13,22 @@
 ## Screenshots
 ### Home Page
 
-![Alt text](/public/README%20assets/home.png "Wireframe")
+![Alt text](/public/README%20assets/homepage.png "Wireframe")
 
 ### Map Page
-![Alt text](/public/README%20assets/map.png "map")
+![Alt text](/public/README%20assets/mappage.png "map")
 
 ### Show Lineup
-![Alt text](/public/README%20assets/lineup-show.png "lineup show")
+![Alt text](/public/README%20assets/lineupshow.png "lineup show")
 
 ### User Page
-![Alt text](/public/README%20assets/managelineups.png "Wireframe")
+![Alt text](/public/README%20assets/managelinups.png "Wireframe")
 
 ### Edit
-![Alt text](/public/README%20assets/edit.png "Wireframe")
+![Alt text](/public/README%20assets/editpage.png "Wireframe")
 
 ### Add Page 
-![Alt text](/public/README%20assets/add-new.png "Wireframe")
+![Alt text](/public/README%20assets/addnewlineup.png "Wireframe")
 
 
 
