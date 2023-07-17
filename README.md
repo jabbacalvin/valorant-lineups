@@ -40,6 +40,10 @@
 ### Add Page 
 ![Alt text](/public/README%20assets/addnewlineup.png "Wireframe")
 
+# Next steps....
+* Favorite your lineups so it will show directly in the manage lineups.
+* Admin priviledges for users with higher priviledge to review the submission of a user lineup to validate the lineup.
+
 
 
 
