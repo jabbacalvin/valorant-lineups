@@ -49,7 +49,7 @@
 
 # Next steps....
 * Favorite your lineups so it will show directly in the manage lineups.
-* Admin priviledges for users with higher priviledge to review the submission of a user lineup to validate the lineup.
+* Admin priviledges for users with higher privilege to review the submission of a user lineup to validate the lineup.
 * Image upload (multer, fs)
 
 
