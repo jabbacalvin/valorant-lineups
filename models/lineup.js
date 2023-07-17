@@ -23,6 +23,7 @@ const lineupSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Agent",
     },
+    ability: { type: String },
     url: { type: String },
     image: { data: Buffer, contentType: String },
     difficulty: { type: Number, min: 0, max: 2 },

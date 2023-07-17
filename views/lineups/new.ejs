@@ -1,356 +1,305 @@
 <%- include('../partials/header') %>
-<div class="container-fluid" data-bs-theme="dark">
-  <form
-    id="new-form"
-    class="needs-validation"
-    action="/lineups"
-    method="POST"
-    novalidate
-  >
-    <div class="row">
-      <div class="col-lg-6 col-md-6">
-        <div class="row">
-          <div class="col-lg-6 col-md-6">
-            <div class="mb-3">
-              <label class="form-label text-white">Name Lineup</label>
-              <input
-                type="text"
-                class="form-control"
-                id="formGroupExampleInput"
-                placeholder="Ex: Brimstone molly from A lobby to A default plant "
-                name="name"
-                required
-              />
-              <div class="invalid-feedback">Please name your lineup!</div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label text-white">Upload Images</label>
-              <input
-                class="form-control"
-                type="file"
-                id="formFileMultiple"
-                multiple
-                name="image"
-                required
-              />
-              <div class="invalid-feedback">
-                Please upload an image of the lineup.
+  <div class="container-fluid" data-bs-theme="dark">
+    <form id="new-form" class="needs-validation" action="/lineups" method="POST" novalidate>
+      <div class="row">
+        <div class="col-lg-6 col-md-6">
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <div class="mb-3">
+                <label class="form-label text-white">Name Lineup</label>
+                <input type="text" class="form-control" id="formGroupExampleInput"
+                  placeholder="Ex: Brimstone molly from A lobby to A default plant " name="name" required />
+                <div class="invalid-feedback">Please name your lineup!</div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-white">Upload Images</label>
+                <input class="form-control" type="file" id="formFileMultiple" multiple name="image" required />
+                <div class="invalid-feedback">
+                  Please upload an image of the lineup.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-white">Youtube URL</label>
+                <div class="input-group">
+                  <span class="input-group-text" id="basic-addon3">Youtube</span>
+                  <input type="text" class="form-control" id="basic-url" name="url" />
+                </div>
+              </div>
+              <div class="mb-3">
+                <button type="button" id="add-marker-btn" class="btn btn-dark form-control" disabled>
+                  Add Marker
+                </button>
+              </div>
+              <div class="mb-3">
+                <button type="button" id="delete-marker-btn" class="btn btn-dark form-control" hidden>
+                  Delete Marker
+                </button>
               </div>
             </div>
-            <div class="mb-3">
-              <label class="form-label text-white">Youtube URL</label>
-              <div class="input-group">
-                <span class="input-group-text" id="basic-addon3">Youtube</span>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="basic-url"
-                  name="url"
-                />
+            <div class="col-lg-6 col-md-6">
+              <div class="mb-3">
+                <label class="form-label text-white">Select Map</label>
+                <select id="map-select" class="form-select" name="map" placeholder="Map" required>
+                  <option value="" selected disabled>Maps</option>
+                  <%- maps.map(m=> `
+                    <option value="${m._id}">${m.name}</option>
+                    `).join('') %>
+                </select>
+                <div class="invalid-feedback">Please select a map.</div>
               </div>
-            </div>
-            <div class="mb-3">
-              <button
-                type="button"
-                id="add-marker-btn"
-                class="btn btn-dark form-control"
-                disabled
-              >
-                Add Marker
-              </button>
-            </div>
-            <div class="mb-3">
-              <button
-                type="button"
-                id="delete-marker-btn"
-                class="btn btn-dark form-control"
-                hidden
-              >
-                Delete Marker
-              </button>
-            </div>
-          </div>
-          <div class="col-lg-6 col-md-6">
-            <div class="mb-3">
-              <label class="form-label text-white">Select Map</label>
-              <select
-                id="map-select"
-                class="form-select"
-                name="map"
-                placeholder="Map"
-                required
-              >
-                <option value="" selected disabled>Maps</option>
-                <%- maps.map(m=> `
-                <option value="${m._id}">${m.name}</option>
-                `).join('') %>
-              </select>
-              <div class="invalid-feedback">Please select a map.</div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label text-white">Select Agent</label>
-              <select
-                id="agent-select"
-                class="form-select"
-                name="agent"
-                required
-              >
-                <option value="" selected disabled>Select Agent</option>
-                <%- agents.map(a=> `
-                <option value="${a._id}">${a.name}</option>
-                `).join('') %>
-              </select>
-              <div class="invalid-feedback">Please select an agent.</div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label text-white">Select Abilities</label>
-              <select
-                id="ability-select"
-                class="form-select"
-                name="ability"
-                style="cursor: default"
-                disabled
-                required
-              >
-                <option value="" selected disabled>Select Ability</option>
-              </select>
-              <div class="invalid-feedback">
-                Please select an agent ability.
+              <div class="mb-3">
+                <label class="form-label text-white">Select Agent</label>
+                <select id="agent-select" class="form-select" name="agent" required>
+                  <option value="" selected disabled>Select Agent</option>
+                  <%- agents.map(a=> `
+                    <option value="${a._id}">${a.name}</option>
+                    `).join('') %>
+                </select>
+                <div class="invalid-feedback">Please select an agent.</div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-white">Select Abilities</label>
+                <select id="ability-select" class="form-select" name="ability" style="cursor: default" disabled
+                  required>
+                  <option value="" selected disabled>Select Ability</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select an agent ability.
+                </div>
               </div>
             </div>
           </div>
+
+          <input type="text" class="form-control" id="coordinates" name="coordinates" hidden />
+
+          <div class="d-grid gap-2">
+            <button id="submit-btn" class="btn btn-primary" type="submit">
+              Submit
+            </button>
+          </div>
         </div>
-
-        <input type="text" class="form-control" id="coordinates" name="coordinates" hidden />
-
-        <div class="d-grid gap-2">
-          <button id="submit-btn" class="btn btn-primary" type="submit">
-            Submit
-          </button>
+        <div class="col-lg-6 col-md-6">
+          <div id="canvas-container">
+            <img id="minimap-img" hidden />
+            <canvas id="minimap-canvas"></canvas>
+          </div>
         </div>
       </div>
-      <div class="col-lg-6 col-md-6">
-        <div id="canvas-container">
-          <img id="minimap-img" hidden />
-          <canvas id="minimap-canvas"></canvas>
-        </div>
-      </div>
-    </div>
-  </form>
-</div>
+    </form>
+  </div>
 
-<script>
-  const coordinatesEl = document.getElementById("coordinates");
-  const mapSelectEl = document.getElementById("map-select");
-  const minimapEl = document.getElementById("minimap-img");
-  const addMarkerBtnEl = document.getElementById("add-marker-btn");
-  const deleteMarkerBtnEl = document.getElementById("delete-marker-btn");
-  const submitBtnEl = document.getElementById("submit-btn");
-  const agentSelectEl = document.getElementById("agent-select");
-  const abilitySelectEl = document.getElementById("ability-select");
-  agentSelectEl.addEventListener("change", async function (e) {
-    abilitySelectEl.removeAttribute("disabled");
-    abilitySelectEl.innerHTML = `<option value="" selected disabled>Select Ability</option>`;
-    abilitySelectEl.style.cursor = "pointer";
-    let agentId = e.target.value;
-    let response = await fetch(`/api/lineups/${agentId}`);
-    let data = await response.json();
-    data.forEach(function (a) {
-      abilitySelectEl.innerHTML += `<option value='${a._id}'> ${a.name} </option>`;
-    });
-  });
-  addMarkerBtnEl.addEventListener("click", function (e) {
-    addAnchorPair();
-    addMarkerBtnEl.hidden = true;
-    deleteMarkerBtnEl.hidden = false;
-  });
-  deleteMarkerBtnEl.addEventListener("click", function (e) {
-    deleteAnchorPair();
-    addMarkerBtnEl.hidden = false;
-    deleteMarkerBtnEl.hidden = true;
-  });
-  submitBtnEl.addEventListener("click", function (e) {
-    savePoints();
-  });
-  const canvas = document.getElementById("minimap-canvas");
-  const ctx = canvas.getContext("2d");
-  const anchorPairs = [];
-  let hasAnchorPairBeenAdded = false;
-  let isDragging = false;
-  let selectedAnchorPairIndex = -1;
-  let selectedAnchorIndex = -1;
-  let scale = 1;
-  let totalTranslation = { x: 0, y: 0 };
-
-  const image = new Image();
-  image.onload = drawImageAndAnchors;
-
-  mapSelectEl.addEventListener("change", async function (e) {
-    addMarkerBtnEl.removeAttribute("disabled");
-    let mapId = e.target.value;
-    let response = await fetch(`/api/maps/${mapId}`);
-    let data = await response.json();
-    minimapEl.src = data.minimap;
-
-    image.src = document.getElementById("minimap-img").src;
-  });
-
-  function drawImageAndAnchors() {
-    const { naturalWidth, naturalHeight } = image;
-    canvas.width = naturalWidth;
-    canvas.height = naturalHeight;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ctx.save();
-
-    ctx.translate(totalTranslation.x, totalTranslation.y);
-    ctx.scale(scale, scale);
-    ctx.translate(-totalTranslation.x, -totalTranslation.y);
-
-    ctx.drawImage(image, 0, 0);
-    drawAnchorPairs();
-
-    ctx.restore();
-  }
-
-  function drawAnchorPairs() {
-    anchorPairs.forEach((pair, pairIndex) => {
-      const anchor1 = pair.anchor1;
-      const anchor2 = pair.anchor2;
-      const isSelected = pairIndex === selectedAnchorPairIndex;
-
-      ctx.beginPath();
-      ctx.moveTo(anchor1.x, anchor1.y);
-      ctx.lineTo(anchor2.x, anchor2.y);
-      ctx.strokeStyle = isSelected ? "orange" : pair.lineColor;
-      ctx.lineWidth = 2 / scale; // adjust line width with the scale
-      ctx.stroke();
-
-      [anchor1, anchor2].forEach((anchor) => {
-        if (anchor.isVisible) {
-          ctx.fillStyle = isSelected ? "orange" : anchor.color;
-          ctx.beginPath();
-          ctx.arc(anchor.x, anchor.y, 10 / scale, 0, 2 * Math.PI); // adjust the anchor radius with the scale
-          ctx.fill();
-        }
+  <script>
+    const coordinatesEl = document.getElementById("coordinates");
+    const mapSelectEl = document.getElementById("map-select");
+    const minimapEl = document.getElementById("minimap-img");
+    const addMarkerBtnEl = document.getElementById("add-marker-btn");
+    const deleteMarkerBtnEl = document.getElementById("delete-marker-btn");
+    const submitBtnEl = document.getElementById("submit-btn");
+    const agentSelectEl = document.getElementById("agent-select");
+    const abilitySelectEl = document.getElementById("ability-select");
+    agentSelectEl.addEventListener("change", async function (e) {
+      abilitySelectEl.removeAttribute("disabled");
+      abilitySelectEl.innerHTML = `<option value="" selected disabled>Select Ability</option>`;
+      abilitySelectEl.style.cursor = "pointer";
+      let agentId = e.target.value;
+      let response = await fetch(`/api/lineups/${agentId}`);
+      let data = await response.json();
+      data.forEach(function (a) {
+        abilitySelectEl.innerHTML += `<option value='${a._id}'> ${a.name} </option>`;
       });
     });
-  }
-  function addAnchorPair() {
-    const newAnchorPair = {
-      anchor1: { x: 500, y: 500, color: "lightgreen", isVisible: true },
-      anchor2: { x: 600, y: 600, color: "red", isVisible: true },
-      lineColor: "black",
-    };
-    anchorPairs.push(newAnchorPair);
-    drawImageAndAnchors();
-  }
+    addMarkerBtnEl.addEventListener("click", function (e) {
+      addAnchorPair();
+      addMarkerBtnEl.hidden = true;
+      deleteMarkerBtnEl.hidden = false;
+    });
+    deleteMarkerBtnEl.addEventListener("click", function (e) {
+      deleteAnchorPair();
+      addMarkerBtnEl.hidden = false;
+      deleteMarkerBtnEl.hidden = true;
+    });
+    submitBtnEl.addEventListener("click", function (e) {
+      savePoints();
+    });
+    const canvas = document.getElementById("minimap-canvas");
+    const ctx = canvas.getContext("2d");
+    const anchorPairs = [];
+    let hasAnchorPairBeenAdded = false;
+    let isDragging = false;
+    let selectedAnchorPairIndex = -1;
+    let selectedAnchorIndex = -1;
+    let scale = 1;
+    let totalTranslation = { x: 0, y: 0 };
 
-  function deleteAnchorPair() {
-    if (anchorPairs.length > 0) {
-      anchorPairs.pop(); // Removes the last (in this case, the only) element
-      drawImageAndAnchors();
-      console.log("Anchor pair deleted.");
-    } else {
-      console.log("No anchor pair to delete.");
+    const image = new Image();
+    image.onload = drawImageAndAnchors;
+
+    mapSelectEl.addEventListener("change", async function (e) {
+      addMarkerBtnEl.removeAttribute("disabled");
+      let mapId = e.target.value;
+      let response = await fetch(`/api/maps/${mapId}`);
+      let data = await response.json();
+      minimapEl.src = data.minimap;
+
+      image.src = document.getElementById("minimap-img").src;
+    });
+
+    function drawImageAndAnchors() {
+      const { naturalWidth, naturalHeight } = image;
+      canvas.width = naturalWidth;
+      canvas.height = naturalHeight;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+
+      ctx.translate(totalTranslation.x, totalTranslation.y);
+      ctx.scale(scale, scale);
+      ctx.translate(-totalTranslation.x, -totalTranslation.y);
+
+      ctx.drawImage(image, 0, 0);
+      drawAnchorPairs();
+
+      ctx.restore();
     }
-  }
 
-  function savePoints() {
-    const coordinates =  [anchorPairs[0].anchor1.x, anchorPairs[0].anchor1.y, anchorPairs[0].anchor2.x, anchorPairs[0].anchor2.y];
-    coordinatesEl.value = coordinates;
-  }
+    function drawAnchorPairs() {
+      anchorPairs.forEach((pair, pairIndex) => {
+        const anchor1 = pair.anchor1;
+        const anchor2 = pair.anchor2;
+        const isSelected = pairIndex === selectedAnchorPairIndex;
 
-  function generateUniqueId() {
-    return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
-  }
+        ctx.beginPath();
+        ctx.moveTo(anchor1.x, anchor1.y);
+        ctx.lineTo(anchor2.x, anchor2.y);
+        ctx.strokeStyle = isSelected ? "orange" : pair.lineColor;
+        ctx.lineWidth = 2 / scale; // adjust line width with the scale
+        ctx.stroke();
 
-  function getMousePos(evt) {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width / scale; // incorporate the scale
-    const scaleY = canvas.height / rect.height / scale; // incorporate the scale
+        [anchor1, anchor2].forEach((anchor) => {
+          if (anchor.isVisible) {
+            ctx.fillStyle = isSelected ? "orange" : anchor.color;
+            ctx.beginPath();
+            ctx.arc(anchor.x, anchor.y, 10 / scale, 0, 2 * Math.PI); // adjust the anchor radius with the scale
+            ctx.fill();
+          }
+        });
+      });
+    }
+    function addAnchorPair() {
+      const newAnchorPair = {
+        anchor1: { x: 500, y: 500, color: "lightgreen", isVisible: true },
+        anchor2: { x: 600, y: 600, color: "red", isVisible: true },
+        lineColor: "black",
+      };
+      anchorPairs.push(newAnchorPair);
+      drawImageAndAnchors();
+    }
 
-    return {
-      x: (evt.clientX - rect.left) * scaleX - totalTranslation.x / scale,
-      y: (evt.clientY - rect.top) * scaleY - totalTranslation.y / scale,
-    };
-  }
-
-  function handleMouseDown(evt) {
-    const mousePos = getMousePos(evt);
-    isDragging = false; // initialize isDragging as false
-
-    for (let pairIndex = 0; pairIndex < anchorPairs.length; pairIndex++) {
-      // use a for loop instead of forEach
-      const { anchor1, anchor2 } = anchorPairs[pairIndex];
-
-      if (
-        Math.abs(mousePos.x - anchor1.x) <= 10 / scale && // Adjusted for anchor point size and scale
-        Math.abs(mousePos.y - anchor1.y) <= 10 / scale
-      ) {
-        isDragging = true;
-        selectedAnchorPairIndex = pairIndex;
-        selectedAnchorIndex = 0;
-        break; // break the loop
-      } else if (
-        Math.abs(mousePos.x - anchor2.x) <= 10 / scale && // Adjusted for anchor point size and scale
-        Math.abs(mousePos.y - anchor2.y) <= 10 / scale
-      ) {
-        isDragging = true;
-        selectedAnchorPairIndex = pairIndex;
-        selectedAnchorIndex = 1;
-        break; // break the loop
+    function deleteAnchorPair() {
+      if (anchorPairs.length > 0) {
+        anchorPairs.pop(); // Removes the last (in this case, the only) element
+        drawImageAndAnchors();
+        console.log("Anchor pair deleted.");
+      } else {
+        console.log("No anchor pair to delete.");
       }
     }
-  }
 
-  function handleMouseMove(evt) {
-    if (!isDragging) return;
+    function savePoints() {
+      const coordinates = [anchorPairs[0].anchor1.x, anchorPairs[0].anchor1.y, anchorPairs[0].anchor2.x, anchorPairs[0].anchor2.y];
+      coordinatesEl.value = coordinates;
+    }
 
-    const mousePos = getMousePos(evt);
-    const pair = anchorPairs[selectedAnchorPairIndex];
-    const anchor = pair[selectedAnchorIndex === 0 ? "anchor1" : "anchor2"];
+    function generateUniqueId() {
+      return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
+    }
 
-    anchor.x = mousePos.x;
-    anchor.y = mousePos.y;
+    function getMousePos(evt) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width / scale; // incorporate the scale
+      const scaleY = canvas.height / rect.height / scale; // incorporate the scale
 
-    drawImageAndAnchors();
-  }
+      return {
+        x: (evt.clientX - rect.left) * scaleX - totalTranslation.x / scale,
+        y: (evt.clientY - rect.top) * scaleY - totalTranslation.y / scale,
+      };
+    }
 
-  function handleMouseUp(evt) {
-    isDragging = false;
-    selectedAnchorPairIndex = -1;
-    selectedAnchorIndex = -1;
-  }
+    function handleMouseDown(evt) {
+      const mousePos = getMousePos(evt);
+      isDragging = false; // initialize isDragging as false
 
-  canvas.addEventListener("mousedown", handleMouseDown);
-  canvas.addEventListener("mousemove", handleMouseMove);
-  canvas.addEventListener("mouseup", handleMouseUp);
+      for (let pairIndex = 0; pairIndex < anchorPairs.length; pairIndex++) {
+        // use a for loop instead of forEach
+        const { anchor1, anchor2 } = anchorPairs[pairIndex];
 
-  // Bootstrap Form Validation
-  (function () {
-    "use strict";
+        if (
+          Math.abs(mousePos.x - anchor1.x) <= 10 / scale && // Adjusted for anchor point size and scale
+          Math.abs(mousePos.y - anchor1.y) <= 10 / scale
+        ) {
+          isDragging = true;
+          selectedAnchorPairIndex = pairIndex;
+          selectedAnchorIndex = 0;
+          break; // break the loop
+        } else if (
+          Math.abs(mousePos.x - anchor2.x) <= 10 / scale && // Adjusted for anchor point size and scale
+          Math.abs(mousePos.y - anchor2.y) <= 10 / scale
+        ) {
+          isDragging = true;
+          selectedAnchorPairIndex = pairIndex;
+          selectedAnchorIndex = 1;
+          break; // break the loop
+        }
+      }
+    }
 
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.querySelectorAll(".needs-validation");
+    function handleMouseMove(evt) {
+      if (!isDragging) return;
 
-    // Loop over them and prevent submission
-    Array.prototype.slice.call(forms).forEach(function (form) {
-      form.addEventListener(
-        "submit",
-        function (event) {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
+      const mousePos = getMousePos(evt);
+      const pair = anchorPairs[selectedAnchorPairIndex];
+      const anchor = pair[selectedAnchorIndex === 0 ? "anchor1" : "anchor2"];
 
-          form.classList.add("was-validated");
-        },
-        false
-      );
-    });
-  })();
-</script>
+      anchor.x = mousePos.x;
+      anchor.y = mousePos.y;
 
-<%- include('../partials/footer') %>
+      drawImageAndAnchors();
+    }
+
+    function handleMouseUp(evt) {
+      isDragging = false;
+      selectedAnchorPairIndex = -1;
+      selectedAnchorIndex = -1;
+    }
+
+    canvas.addEventListener("mousedown", handleMouseDown);
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseup", handleMouseUp);
+
+    // Bootstrap Form Validation
+    (function () {
+      "use strict";
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.querySelectorAll(".needs-validation");
+
+      // Loop over them and prevent submission
+      Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener(
+          "submit",
+          function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+
+            form.classList.add("was-validated");
+          },
+          false
+        );
+      });
+    })();
+  </script>
+
+  <%- include('../partials/footer') %>

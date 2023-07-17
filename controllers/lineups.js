@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Lineup = require("../models/lineup");
 const User = require("../models/user");
 const Map = require("../models/map");
@@ -50,7 +51,7 @@ async function create(req, res) {
 async function edit(req, res) {
   const maps = await Map.find({});
   const agents = await Agent.find({});
-  const lineupInfo = await Lineup.findById(req.params.id)
+  const lineupInfo = await Lineup.findOne({ _id: req.params.id })
     .populate("map")
     .populate("agent");
 
@@ -71,6 +72,20 @@ async function update(req, res) {
   lineupData.image = req.body.image;
   lineupData.url = req.body.url;
   lineupData.updatedBy = req.user._id;
+  lineupData.ability = req.body.ability;
+  const coordinatesArr = req.body.coordinates.split(",");
+  req.body.coordinates = [
+    {
+      x: coordinatesArr[0],
+      y: coordinatesArr[1]
+    },
+    {
+      x: coordinatesArr[2],
+      y: coordinatesArr[3]
+    }
+  ];
+  lineupData.coordinates = req.body.coordinates;
+
   await Lineup.updateMany(req.body, req.params.id);
   //save
   await lineupData.save();
