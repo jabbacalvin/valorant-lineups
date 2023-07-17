@@ -1,9 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-module.exports = {
-  getOne,
-};
+const coordinateSchema = new Schema({
+  x: {
+    type: Number,
+    min: 0,
+  },
+  y: {
+    type: Number,
+    min: 0,
+  },
+});
 
 const lineupSchema = new Schema(
   {
@@ -18,7 +25,14 @@ const lineupSchema = new Schema(
     },
     url: { type: String },
     image: { data: Buffer, contentType: String },
-    user: {
+    difficulty: { type: Number, min: 0, max: 2 },
+    coordinates: [coordinateSchema],
+    isVerified: { type: Boolean },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    updatedBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
@@ -27,10 +41,5 @@ const lineupSchema = new Schema(
     timestamps: true,
   }
 );
-
-function getOne(id) {
-  id = parseInt(id);
-  return lineupSchema.find((lineup) => lineup._id === id);
-}
 
 module.exports = mongoose.model("Lineup", lineupSchema);

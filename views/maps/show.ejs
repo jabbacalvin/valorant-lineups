@@ -48,38 +48,7 @@
   </div>
 </div>
 
-<button onclick="addAnchorPair()">Add Lineup</button>
-<button onclick="savePoints()">Save Lineup</button>
-<button onclick="deleteAnchorPair()">Delete Selected Lineup</button>
-
 <script>
-  const agentsEl = document.getElementById("agents-container");
-  const agentEl = document.querySelectorAll(".agent-image");
-  const abilitiesEl = document.getElementById("abilities-container");
-  const abilitiesImgEl = document.getElementById("abilities-img-container");
-  agentsEl.addEventListener("click", async function (e) {
-    if (e.target.nodeName === "IMG") {
-      abilitiesImgEl.innerHTML = "";
-      agentEl.forEach((e) => e.classList.remove("agent-image-focus"));
-      e.target.classList.toggle("agent-image-focus");
-      const agentId = e.target.parentElement.dataset.id;
-      const mapId = "<%= map._id %>";
-
-      let response1 = await fetch(`/api/lineups/${agentId}`);
-      let response2 = await fetch(`/api/lineups/${mapId}/${agentId}`);
-
-      let agentAbilities = await response1.json();
-      let lineups = await response2.json();
-      abilitiesEl.style.visibility = "visible";
-      agentAbilities.forEach(function (a) {
-        abilitiesImgEl.innerHTML += `<img src="${a.icon}" class="abilities-icon image-fluid" data-id="${a._id}" alt="${a.name}" >`;
-      });
-      abilitiesImgEl.classList.add("col-12");
-
-      // call function to pass data to minimap
-    }
-  });
-
   const mapBanner = document.getElementById("map-banner");
   mapBanner.style.backgroundImage =
     "linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%), url(<%= map.image %>)";
@@ -97,6 +66,45 @@
   const image = new Image();
   image.onload = drawImageAndAnchors;
   image.src = document.getElementById("minimap-img").src;
+
+  const agentsEl = document.getElementById("agents-container");
+  const agentEl = document.querySelectorAll(".agent-image");
+  const abilitiesEl = document.getElementById("abilities-container");
+  const abilitiesImgEl = document.getElementById("abilities-img-container");
+  agentsEl.addEventListener("click", async function (e) {
+    if (e.target.nodeName === "IMG") {
+      abilitiesImgEl.innerHTML = "";
+      anchorPairs.length = 0;
+      selectedAnchorPairIndex = -1;
+      drawImageAndAnchors();
+      agentEl.forEach((e) => e.classList.remove("agent-image-focus"));
+      e.target.classList.toggle("agent-image-focus");
+      const agentId = e.target.parentElement.dataset.id;
+      const mapId = "<%= map._id %>";
+
+      let response1 = await fetch(`/api/lineups/${agentId}`);
+      let response2 = await fetch(`/api/lineups/${mapId}/${agentId}`);
+
+      let agentAbilities = await response1.json();
+      let lineups = await response2.json();
+      abilitiesEl.style.visibility = "visible";
+      agentAbilities.forEach(function (a) {
+        abilitiesImgEl.innerHTML += `<img src="${a.icon}" class="abilities-icon image-fluid" data-id="${a._id}" alt="${a.name}" >`;
+      });
+      abilitiesImgEl.classList.add("col-12");
+
+      // call function to pass data to minimap
+      let lineupId, startX, startY, endX, endY;
+      lineups.forEach(function (l) {
+        lineupId = l._id;
+        startX = l.coordinates[0].x;
+        startY = l.coordinates[0].y;
+        endX = l.coordinates[1].x;
+        endY = l.coordinates[1].y;
+        addAnchorPair(lineupId, startX, startY, endX, endY);
+      });
+    }
+  });
 
   function drawImageAndAnchors() {
     const { naturalWidth, naturalHeight } = image;
@@ -140,41 +148,15 @@
       });
     });
   }
-  function addAnchorPair() {
+  function addAnchorPair(lineupId, startX, startY, endX, endY, icon) {
     const newAnchorPair = {
-      anchor1: { x: 500, y: 500, color: "red", isVisible: true,  },
-      anchor2: { x: 600, y: 600, color: "blue", isVisible: true },
+      anchor1: { x: startX, y: startY, color: "lightgreen", isVisible: true },
+      anchor2: { x: endX, y: endY, color: "red", isVisible: true },
       lineColor: "black",
+      lineupId: lineupId,
     };
     anchorPairs.push(newAnchorPair);
     drawImageAndAnchors();
-  }
-
-  function deleteAnchorPair() {
-    if (anchorPairs.length > 0) {
-      anchorPairs.pop(); // Removes the last (in this case, the only) element
-      drawImageAndAnchors();
-      console.log("Anchor pair deleted.");
-    } else {
-      console.log("No anchor pair to delete.");
-    }
-  }
-
-  function savePoints() {
-    const lineupData = {
-      id: generateUniqueId(),
-      anchorPairs: anchorPairs.map((pair) => ({
-        anchor1: { ...pair.anchor1 },
-        anchor2: { ...pair.anchor2 },
-        lineColor: pair.lineColor,
-      })),
-    };
-
-    console.log("Saved Lineup:", lineupData.anchorPairs);
-  }
-
-  function generateUniqueId() {
-    return Date.now().toString() + Math.floor(Math.random() * 1000).toString();
   }
 
   function getMousePos(evt) {
@@ -200,7 +182,7 @@
         Math.abs(mousePos.x - anchor1.x) <= 10 / scale && // Adjusted for anchor point size and scale
         Math.abs(mousePos.y - anchor1.y) <= 10 / scale
       ) {
-        isDragging = true;
+        isDragging = false;
         selectedAnchorPairIndex = pairIndex;
         selectedAnchorIndex = 0;
         break; // break the loop
@@ -208,7 +190,7 @@
         Math.abs(mousePos.x - anchor2.x) <= 10 / scale && // Adjusted for anchor point size and scale
         Math.abs(mousePos.y - anchor2.y) <= 10 / scale
       ) {
-        isDragging = true;
+        isDragging = false;
         selectedAnchorPairIndex = pairIndex;
         selectedAnchorIndex = 1;
         break; // break the loop
@@ -229,15 +211,36 @@
     drawImageAndAnchors();
   }
 
-  function handleMouseUp(evt) {
-    isDragging = false;
-    selectedAnchorPairIndex = -1;
-    selectedAnchorIndex = -1;
+  function handleClick(evt) {
+    const mousePos = getMousePos(evt);
+
+    for (let pairIndex = 0; pairIndex < anchorPairs.length; pairIndex++) {
+      const { anchor1, anchor2 } = anchorPairs[pairIndex];
+
+      const distToAnchor1 = distance(mousePos, anchor1);
+      const distToAnchor2 = distance(mousePos, anchor2);
+
+      if (distToAnchor1 <= 10 / scale || distToAnchor2 <= 10 / scale) {
+        selectedAnchorPairIndex = pairIndex;
+
+        // draw the image and anchor pairs again to reflect the selection
+        drawImageAndAnchors();
+
+        break;
+      }
+    }
   }
 
+  function distance(point1, point2) {
+    const dx = point2.x - point1.x;
+    const dy = point2.y - point1.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  canvas.addEventListener("click", handleClick);
   canvas.addEventListener("mousedown", handleMouseDown);
   canvas.addEventListener("mousemove", handleMouseMove);
-  canvas.addEventListener("mouseup", handleMouseUp);
+  // canvas.addEventListener("mouseup", handleMouseUp);
 </script>
 
 <%- include('../partials/footer') %>

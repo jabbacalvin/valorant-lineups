@@ -7,7 +7,7 @@ module.exports = {
 };
 
 async function show(req, res) {
-  const lineups = await Lineup.find({ user: req.user._id })
+  const lineups = await Lineup.find({ createdBy: req.user._id })
     .populate("agent")
     .populate("map");
 
