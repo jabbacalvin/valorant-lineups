@@ -139,7 +139,9 @@
 
       const videoId = getId(inputUrlEl.value);
       const embedURL = "//www.youtube.com/embed/" + videoId;
-      embedUrlEl.value = embedURL;
+      if(inputUrlEl.value !== "" ) {
+        embedUrlEl.value = embedURL;
+      }
     });
 
     function getId(url) {
