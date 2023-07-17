@@ -12,17 +12,20 @@
                 <div class="invalid-feedback">Please name your lineup!</div>
               </div>
               <div class="mb-3">
-                <label class="form-label text-white">Upload Images</label>
-                <input class="form-control" type="file" id="formFileMultiple" multiple name="image" required />
+                <label class="form-label text-white">Images Links</label>
+                <input type="text" class="form-control" placeholder="*The Lineup* - Ex: https://i.imgur.com/nerd.png" name="img1" required />
                 <div class="invalid-feedback">
                   Please upload an image of the lineup.
                 </div>
+                <input type="text" class="form-control" placeholder="*Starting Position* (Optional)" name="img2" />
+                <input type="text" class="form-control" placeholder="*End Result* (Optional)" name="img3" />
               </div>
               <div class="mb-3">
                 <label class="form-label text-white">Youtube URL</label>
                 <div class="input-group">
                   <span class="input-group-text" id="basic-addon3">Youtube</span>
-                  <input type="text" class="form-control" id="basic-url" name="url" />
+                  <input type="text" class="form-control" id="input-url" name="input-url" />
+                  <input type="text" class="form-control" id="embed-url" name="url" hidden />
                 </div>
               </div>
               <div class="mb-3">
@@ -73,7 +76,7 @@
           <input type="text" class="form-control" id="coordinates" name="coordinates" hidden />
 
           <div class="d-grid gap-2">
-            <button id="submit-btn" class="btn btn-primary" type="submit">
+            <button id="submit-btn" class="btn btn-danger" type="submit">
               Submit
             </button>
           </div>
@@ -97,12 +100,25 @@
     const submitBtnEl = document.getElementById("submit-btn");
     const agentSelectEl = document.getElementById("agent-select");
     const abilitySelectEl = document.getElementById("ability-select");
+    const inputUrlEl = document.getElementById("input-url");
+    const embedUrlEl = document.getElementById("embed-url");
+
+    const canvas = document.getElementById("minimap-canvas");
+    const ctx = canvas.getContext("2d");
+    const anchorPairs = [];
+    let hasAnchorPairBeenAdded = false;
+    let isDragging = false;
+    let selectedAnchorPairIndex = -1;
+    let selectedAnchorIndex = -1;
+    let scale = 1;
+    let totalTranslation = { x: 0, y: 0 };
+
     agentSelectEl.addEventListener("change", async function (e) {
       abilitySelectEl.removeAttribute("disabled");
       abilitySelectEl.innerHTML = `<option value="" selected disabled>Select Ability</option>`;
       abilitySelectEl.style.cursor = "pointer";
       let agentId = e.target.value;
-      let response = await fetch(`/api/lineups/${agentId}`);
+      let response = await fetch(`/api/agents/${agentId}`);
       let data = await response.json();
       data.forEach(function (a) {
         abilitySelectEl.innerHTML += `<option value='${a._id}'> ${a.name} </option>`;
@@ -120,16 +136,21 @@
     });
     submitBtnEl.addEventListener("click", function (e) {
       savePoints();
+
+      const videoId = getId(inputUrlEl.value);
+      const embedURL = "//www.youtube.com/embed/" + videoId;
+      embedUrlEl.value = embedURL;
     });
-    const canvas = document.getElementById("minimap-canvas");
-    const ctx = canvas.getContext("2d");
-    const anchorPairs = [];
-    let hasAnchorPairBeenAdded = false;
-    let isDragging = false;
-    let selectedAnchorPairIndex = -1;
-    let selectedAnchorIndex = -1;
-    let scale = 1;
-    let totalTranslation = { x: 0, y: 0 };
+
+    function getId(url) {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+      const match = url.match(regExp);
+
+      return (match && match[2].length === 11)
+        ? match[2]
+        : null;
+    }
+
 
     const image = new Image();
     image.onload = drawImageAndAnchors;

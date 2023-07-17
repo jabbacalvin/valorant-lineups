@@ -26,7 +26,12 @@ async function create(req, res) {
   const user = await User.findById(req.params.id);
   const map = await Map.findById(req.params.id);
   req.body.createdBy = req.user._id;
+  console.log(req);
   try {
+    const images = [req.body.img1, req.body.img2, req.body.img3];
+    req.body.images = images;
+
+    console.log(req.body.coordinates);
     const coordinatesArr = req.body.coordinates.split(",");
     req.body.coordinates = [
       {
@@ -69,10 +74,14 @@ async function update(req, res) {
   lineupData.name = req.body.name;
   lineupData.map = req.body.map;
   lineupData.agent = req.body.agent;
-  lineupData.image = req.body.image;
   lineupData.url = req.body.url;
   lineupData.updatedBy = req.user._id;
   lineupData.ability = req.body.ability;
+
+  const images = [req.body.img1, req.body.img2, req.body.img3];
+  console.log(req.body);
+  req.body.images = images;
+  lineupData.images = req.body.images;
   const coordinatesArr = req.body.coordinates.split(",");
   req.body.coordinates = [
     {
@@ -94,8 +103,7 @@ async function update(req, res) {
 }
 
 async function deleteLineup(req, res) {
-  const lineupData = await Lineup.findById(req.params.id);
-  await Lineup.deleteOne({});
+  await Lineup.deleteOne({ _id: req.params.id });
 
   res.redirect("/users/show");
 }

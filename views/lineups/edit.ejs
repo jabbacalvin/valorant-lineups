@@ -12,11 +12,14 @@
                 <div class="invalid-feedback">Please name your lineup!</div>
               </div>
               <div class="mb-3">
-                <label class="form-label text-white">Upload Images</label>
-                <input class="form-control" type="file" id="formFileMultiple" multiple name="image"  />
+                <label class="form-label text-white">Images Links</label>
+                <input type="text" class="form-control" placeholder="Ex: https://i.imgur.com/you_fking_nerd.png" name="img1" value="<%= lineupInfo.images[0] %>"
+                  required />
                 <div class="invalid-feedback">
                   Please upload an image of the lineup.
                 </div>
+                <input type="text" class="form-control" placeholder="*Optional*" name="img2" value="<%= lineupInfo.images[1] %>" />
+                <input type="text" class="form-control" placeholder="*Optional*" name="img3" value="<%= lineupInfo.images[2] %>" />
               </div>
               <div class="mb-3">
                 <label class="form-label text-white">Youtube URL</label>
@@ -73,7 +76,7 @@
           <input type="text" class="form-control" id="coordinates" name="coordinates" hidden />
 
           <div class="d-grid gap-2">
-            <button id="submit-btn" class="btn btn-primary" type="submit">
+            <button id="submit-btn" class="btn btn-danger" type="submit">
               Submit
             </button>
           </div>
@@ -113,7 +116,7 @@
 
     let agentId = agentSelectEl.value;
     (async function() {
-      let response = await fetch(`/api/lineups/${agentId}`);
+      let response = await fetch(`/api/agents/${agentId}`);
       let data = await response.json();
       data.forEach(function (a) {
         abilitySelectEl.innerHTML += `<option value='${a._id}'> ${a.name} </option>`;
@@ -123,21 +126,18 @@
 
     minimapEl.src = '<%= lineupInfo.map.minimap %>';
 
-    (async function () {
-      const agentId = "<%= lineupInfo.agent._id %>";
-      const mapId = "<%= lineupInfo.map._id %>";
+   (async function () {
+      const lineupId = '<%= lineupInfo._id %>';
 
-      let response = await fetch(`/api/lineups/${mapId}/${agentId}`);
-      let data = await response.json();
-      let lineupId, startX, startY, endX, endY;
-      data.forEach(function (l) {
-        lineupId = l._id;
-        startX = l.coordinates[0].x;
-        startY = l.coordinates[0].y;
-        endX = l.coordinates[1].x;
-        endY = l.coordinates[1].y;
-        addAnchorPair(lineupId, startX, startY, endX, endY);
-      });
+      let response = await fetch(`/api/lineups/${lineupId}`);
+      let lineup = await response.json();
+      console.log(lineup);
+      let startX, startY, endX, endY;
+      startX = lineup.coordinates[0].x;
+      startY = lineup.coordinates[0].y;
+      endX = lineup.coordinates[1].x;
+      endY = lineup.coordinates[1].y;
+      addAnchorPair(lineupId, startX, startY, endX, endY);
     })();
 
     const image = new Image();
@@ -150,7 +150,7 @@
       abilitySelectEl.innerHTML = `<option value="" selected disabled>Select Ability</option>`;
       abilitySelectEl.style.cursor = "pointer";
       let agentId = e.target.value;
-      let response = await fetch(`/api/lineups/${agentId}`);
+      let response = await fetch(`/api/agents/${agentId}`);
       let data = await response.json();
       data.forEach(function (a) {
         abilitySelectEl.innerHTML += `<option value='${a._id}'> ${a.name} </option>`;
@@ -246,7 +246,6 @@
     function savePoints() {
       const coordinates = [anchorPairs[0].anchor1.x, anchorPairs[0].anchor1.y, anchorPairs[0].anchor2.x, anchorPairs[0].anchor2.y];
       coordinatesEl.value = coordinates;
-      console.log(coordinates);
     }
 
     function generateUniqueId() {

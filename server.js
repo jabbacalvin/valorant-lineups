@@ -19,6 +19,7 @@ let lineupsRouter = require("./routes/lineups");
 let mapsRouter = require("./routes/maps");
 let lineupsApiRouter = require("./routes/api/lineups");
 let mapsApiRouter = require("./routes/api/maps");
+let agentsApiRouter = require("./routes/api/agents");
 
 var app = express();
 
@@ -57,6 +58,7 @@ app.use("/lineups", lineupsRouter);
 app.use("/maps", mapsRouter);
 app.use("/api/lineups", lineupsApiRouter);
 app.use("/api/maps", mapsApiRouter);
+app.use("/api/agents", agentsApiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

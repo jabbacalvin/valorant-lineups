@@ -25,7 +25,7 @@ const lineupSchema = new Schema(
     },
     ability: { type: String },
     url: { type: String },
-    image: { data: Buffer, contentType: String },
+    images: { type: Array },
     difficulty: { type: Number, min: 0, max: 2 },
     coordinates: [coordinateSchema],
     isVerified: { type: Boolean },
