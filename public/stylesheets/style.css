@@ -127,6 +127,10 @@ a {
   pointer-events: none;
 }
 
+.map-lineup-images {
+  width: 20rem;
+}
+
 .agent-image {
   opacity: 0.5;
   transition: transform 0.4s;
