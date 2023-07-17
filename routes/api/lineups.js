@@ -4,6 +4,6 @@ const lineupsCtrl = require("../../controllers/api/lineups");
 
 router.get('/:mapId/:agentId/', lineupsCtrl.show);
 
-router.get('/:agentId/', lineupsCtrl.showAbilities);
+router.get('/:lineupId', lineupsCtrl.showOne);
 
 module.exports = router;

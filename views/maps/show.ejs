@@ -32,6 +32,24 @@
             <div id="abilities-img-container"></div>
           </div>
         </div>
+        <hr class="border border-white border-2 opacity-50">
+        <div class="row">
+          <div id="lineup-container" data-bs-theme="dark">
+            <h1 class="text-white">LINEUP</h1>
+            <table class="table" id="lineup-table">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Ability</th>
+                  <th scope="col">Images</th>
+                  <th scope="col">Video</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       <div class="col-lg-7 col-md-7">
         <div id="canvas-container">
@@ -71,9 +89,12 @@
   const agentEl = document.querySelectorAll(".agent-image");
   const abilitiesEl = document.getElementById("abilities-container");
   const abilitiesImgEl = document.getElementById("abilities-img-container");
+  const lineupEl = document.getElementById("lineup-container");
+  const lineupTableEl = document.getElementById("lineup-table");
   agentsEl.addEventListener("click", async function (e) {
     if (e.target.nodeName === "IMG") {
       abilitiesImgEl.innerHTML = "";
+      lineupEl.style.visibility = "hidden";
       anchorPairs.length = 0;
       selectedAnchorPairIndex = -1;
       drawImageAndAnchors();
@@ -82,7 +103,7 @@
       const agentId = e.target.parentElement.dataset.id;
       const mapId = "<%= map._id %>";
 
-      let response1 = await fetch(`/api/lineups/${agentId}`);
+      let response1 = await fetch(`/api/agents/${agentId}`);
       let response2 = await fetch(`/api/lineups/${mapId}/${agentId}`);
 
       let agentAbilities = await response1.json();
@@ -225,6 +246,35 @@
 
         // draw the image and anchor pairs again to reflect the selection
         drawImageAndAnchors();
+        lineupEl.style.visibility = "visible";
+
+        (async function () {
+          let response1 = await fetch(`/api/lineups/${anchorPairs[selectedAnchorPairIndex].lineupId}`);
+          let lineup = await response1.json();
+          let response2 = await fetch(`/api/agents/${lineup.agent._id}`);
+          let abilities = await response2.json();
+          lineupTableEl.tBodies[0].innerHTML = 
+          `<tr>
+            <th scope="row">${lineup.name}</th>
+            <td><img id="lineup-ability"></td>
+            <td>
+              <img src=${lineup.images[0] === undefined ? "" : lineup.images[0]}>
+              <img src=${lineup.images[1] === undefined ? "" : lineup.images[1]}>
+              <img src=${lineup.images[2] === undefined ? "" : lineup.images[2]}>
+            </td>
+            <td>
+              ${ lineup.url === "" ? "No Video Provided" :
+              `<div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="${lineup.url}" allowfullscreen></iframe>
+              </div>`
+              }
+            </td>
+          </tr>`;
+          const lineupAbilityEl = document.getElementById('lineup-ability');
+          abilities.forEach(function(a) {
+            if (a._id === lineup.ability) return lineupAbilityEl.src = `${a.icon}`;
+          });
+        })();
 
         break;
       }

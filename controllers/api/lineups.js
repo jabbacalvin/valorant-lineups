@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
 const Lineup = require("../../models/lineup");
-const Agent = require("../../models/agent");
 
 module.exports = {
   show,
-  showAbilities
+  showOne
 };
 
 async function show(req, res) {
@@ -17,26 +16,11 @@ async function show(req, res) {
   }
 }
 
-async function showAbilities(req, res) {
+async function showOne(req, res) {
   try {
-    const agentAbilities = await Agent.aggregate([
-      {
-        "$unwind": "$abilities"
-      },
-      {
-        "$match": {
-          "_id": new mongoose.Types.ObjectId(`${req.params.agentId}`)
-        }
-      },
-      {
-        "$project": {
-          "_id": "$abilities._id",
-          "name": "$abilities.name",
-          "icon": "$abilities.icon"
-        }
-      }
-    ]);
-    res.json(agentAbilities);
+    const lineup = await Lineup.findOne({ _id: req.params.lineupId }).populate('agent');
+    console.log(lineup);
+    res.json(lineup);
   } catch (err) {
     console.log(err);
     res.status(500).json('som ting wong');

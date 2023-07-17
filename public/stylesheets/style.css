@@ -7,6 +7,22 @@ a {
   color: #00b7ff;
 }
 
+.navbar-brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 30%;
+}
+
+.brand-name {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 90%;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
 .avatar {
   border-radius: 50%;
   margin-right: 0.5rem;
@@ -138,6 +154,14 @@ a {
   height: 8rem;
 }
 
+#lineup-container {
+  visibility: hidden;
+}
+
+#lineup-ability {
+  height: 2rem;
+}
+
 .abilities-icon {
   width: 3.5rem;
   margin: 0.5rem;
@@ -153,6 +177,19 @@ a {
 
 .form-select {
   cursor: pointer;
+}
+
+.ability-icon {
+  height: 1.5rem;
+  margin-left: 1rem;
+}
+
+tr:last-child td:first-child {
+  border-bottom-left-radius: 0.7rem;
+}
+
+tr:last-child td:last-child {
+  border-bottom-right-radius: 0.7rem;
 }
 
 @media all and (min-width: 576px) {
