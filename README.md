@@ -40,9 +40,16 @@
 ### Add Page 
 ![Alt text](/public/README%20assets/addnewlineup.png "Wireframe")
 
+# Challenges
+* Image upload, explored but couldn't get it to work
+* Canvas Implementation
+* API implementation taht cause us to refactor code
+* Embedded data
+
 # Next steps....
 * Favorite your lineups so it will show directly in the manage lineups.
 * Admin priviledges for users with higher priviledge to review the submission of a user lineup to validate the lineup.
+* Image upload (multer, fs)
 
 
 
