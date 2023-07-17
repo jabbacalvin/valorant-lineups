@@ -26,8 +26,18 @@ async function create(req, res) {
   const map = await Map.findById(req.params.id);
   req.body.createdBy = req.user._id;
   try {
+    const coordinatesArr = req.body.coordinates.split(",");
+    req.body.coordinates = [
+      {
+        x: coordinatesArr[0],
+        y: coordinatesArr[1]
+      },
+      {
+        x: coordinatesArr[2],
+        y: coordinatesArr[3]
+      }
+    ];
     const lineup = await Lineup.create(req.body);
-    console.log(req.body);
 
     res.redirect(`/users/show`);
 

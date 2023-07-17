@@ -121,13 +121,7 @@
           </div>
         </div>
 
-        <input
-          type="text"
-          class="form-control"
-          id="coordinates"
-          name="coordinates"
-          hidden
-        />
+        <input type="text" class="form-control" id="coordinates" name="coordinates" hidden />
 
         <div class="d-grid gap-2">
           <button id="submit-btn" class="btn btn-primary" type="submit">
@@ -257,17 +251,7 @@
   }
 
   function savePoints() {
-    const coordinates = new Array();
-    coordinates =  [
-      {
-        x: anchorPairs[0].anchor1.x,
-        y: anchorPairs[0].anchor1.y,
-      },
-      {
-        x: anchorPairs[0].anchor2.x,
-        y: anchorPairs[0].anchor2.y,
-      },
-    ];
+    const coordinates =  [anchorPairs[0].anchor1.x, anchorPairs[0].anchor1.y, anchorPairs[0].anchor2.x, anchorPairs[0].anchor2.y];
     coordinatesEl.value = coordinates;
   }
 
