@@ -1,52 +1,55 @@
 <%- include('../partials/header') %>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <h1 class="text-white"><%= title %></h1>
-</head>
-<br />
-<a href="/lineups/new" type="button" class="btn btn-primary btn-lg"
-  >Add New Lineup</a
->
 
-<br />
-<br />
-<h2 class="text-white">Lineups</h2>
-<table class="table table-borderless table-secondary">
-  <thead>
-    <tr>
-      <th scope="col">Lineup Name</th>
-      <th scope="col">Map</th>
-      <th scope="col">Agent</th>
-      <th scope="col">Ability</th>
-      <th scope="col">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% lineups.forEach(function(lineup) { %>
-    <tr>
-      <td><%= lineup.name %></td>
-      <td><%= lineup.map.name %></td>
-      <td><%= lineup.agent.name %></td>
-      <td><%= lineup.agent.abilities[lineup.agent.abilities.length -1].name %></td>
-      <td>
-        <a
-          href="/lineups/edit/<%= lineup._id %>"
-          type="button"
-          class="btn btn-secondary"
-          >Edit</a
-        >
-  <form action="/lineups/<%= lineup.id %>?_method=DELETE" method="POST">
-    <button type="submit" class="btn btn-danger">Delete</button>
-  </form>
-      </td>
-    </tr>
-    <% }) %>
-  </tbody>
-</table>
-<br /><br /><br />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <h1 class="text-white">
+      <%= title %>
+    </h1>
+  </head>
+
+  <br />
+  <h2 class="text-white">Lineups</h2>
+  <div class="table-container rounded rounded-3 overflow-hidden">
+    <table class="table table-borderless" data-bs-theme="dark">
+      <thead>
+        <tr>
+          <th scope="col">Lineup Name</th>
+          <th scope="col">Map</th>
+          <th scope="col">Agent</th>
+          <th scope="col">Ability</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% lineups.forEach(function(lineup) { %>
+          <tr>
+            <td>
+              <%= lineup.name %>
+            </td>
+            <td>
+              <%= lineup.map.name %>
+            </td>
+            <td>
+              <%= lineup.agent.name %>
+            </td>
+            <td>
+              <div data-agentid="<%= lineup.agent._id %>" data-abilityid="<%= lineup.ability %>" class="ability"></div>
+            </td>
+            <td>
+              <form action="/lineups/<%= lineup.id %>?_method=DELETE" method="POST">
+                <a href="/lineups/edit/<%= lineup._id %>" type="button" class="btn btn-secondary">Edit</a>
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <!-- <br /><br /><br />
 <h2 class="text-white">Favorites</h2>
-<table class="table table-borderless">
+<table class="table table-borderless" data-bs-theme="dark">
   <thead>
     <tr>
       <th scope="col">Lineup Name</th>
@@ -69,7 +72,24 @@
       </td>
     </tr>
   </tbody>
-</table>
+</table> -->
 
-<script></script>
-<%- include('../partials/footer') %>
+  <script>
+    const abilityEl = document.querySelectorAll('.ability');
+    abilityEl.forEach(function (el) {
+      const agentId = el.dataset.agentid;
+      const abilityId = el.dataset.abilityid;
+      (async function () {
+        let response = await fetch(`/api/agents/${agentId}`);
+        let abilities = await response.json();
+        abilities.forEach(function (a) {
+          if (a._id === abilityId) {
+            el.innerHTML = a.name + `<img src=${a.icon} class="ability-icon">`;
+          } 
+        });
+      })();
+    });
+
+  </script>
+
+  <%- include('../partials/footer') %>

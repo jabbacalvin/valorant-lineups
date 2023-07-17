@@ -20,6 +20,7 @@ async function show(req, res) {
   const lineups = await Lineup.find({ map: req.body.id })
     .populate('coordinates')
     .populate('agent');
+  
   res.render("maps/show", { title: `${map.name}`, map, agents, lineups });
 }
 
