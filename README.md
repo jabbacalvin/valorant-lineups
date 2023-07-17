@@ -45,6 +45,7 @@
 * Canvas Implementation
 * API implementation taht cause us to refactor code
 * Embedded data
+* Create functionality
 
 # Next steps....
 * Favorite your lineups so it will show directly in the manage lineups.
