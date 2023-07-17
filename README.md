@@ -43,7 +43,7 @@
 # Challenges
 * Image upload, explored but couldn't get it to work
 * Canvas Implementation
-* API implementation taht cause us to refactor code
+* API implementation that cause us to refactor code
 * Embedded data
 * Create functionality
 
