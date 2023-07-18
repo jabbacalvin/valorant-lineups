@@ -133,6 +133,18 @@ a {
 
 .map-lineup-images {
   width: 20rem;
+  top: -50px;
+  left: -35px;
+  display: block;
+  z-index: 999;
+  cursor: pointer;
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+.map-lineup-images:hover {
+  transform: scale(3);
 }
 
 .agent-image {
