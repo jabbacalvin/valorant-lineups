@@ -215,7 +215,8 @@
 
         [anchor1, anchor2].forEach((anchor) => {
           if (anchor.isVisible) {
-            ctx.fillStyle = isSelected ? "orange" : anchor.color;
+            ctx.fillStyle = anchor.color;
+            // ctx.fillStyle = isSelected ? "orange" : anchor.color;
             ctx.beginPath();
             ctx.arc(anchor.x, anchor.y, 10 / scale, 0, 2 * Math.PI); // adjust the anchor radius with the scale
             ctx.fill();
