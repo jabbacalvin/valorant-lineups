@@ -28,7 +28,10 @@ const lineupSchema = new Schema(
     images: { type: Array },
     difficulty: { type: Number, min: 0, max: 2 },
     coordinates: [coordinateSchema],
-    isVerified: { type: Boolean },
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
