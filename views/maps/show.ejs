@@ -46,6 +46,22 @@
                 </tr>
               </thead>
               <tbody>
+                <tr class="lineup-table-row">
+                  <th scope="row" id="lineup-name"></th>
+                  <td><img id="lineup-ability"></td>
+                  <td>
+                    <div id="lineup-url">
+                      <div class="embed-responsive embed-responsive-16by9" id="lineup-yt-container">
+                        <iframe class="embed-responsive-item" src="" allowfullscreen id="lineup-yt"></iframe>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <img src="" class="map-lineup-images" id="lineup-img-0">
+                    <img src="" class="map-lineup-images" id="lineup-img-1">
+                    <img src="" class="map-lineup-images" id="lineup-img-2">
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -91,6 +107,7 @@
   const abilitiesImgEl = document.getElementById("abilities-img-container");
   const lineupEl = document.getElementById("lineup-container");
   const lineupTableEl = document.getElementById("lineup-table");
+  const lineupImagesEl = document.querySelectorAll(".map-lineup-images");
   agentsEl.addEventListener("click", async function (e) {
     if (e.target.nodeName === "IMG") {
       abilitiesImgEl.innerHTML = "";
@@ -248,29 +265,32 @@
         drawImageAndAnchors();
         lineupEl.style.visibility = "visible";
 
+        const lineupNameEl = document.getElementById("lineup-name");
+        const lineupAbilityEl = document.getElementById('lineup-ability');
+        const lineupUrlEl = document.getElementById('lineup-url');
+        const lineupYTContainerEl = document.getElementById('lineup-yt-container');
+        const lineupYTEl = document.getElementById('lineup-yt');
+        const lineupImg0El = document.getElementById('lineup-img-0');
+        const lineupImg1El = document.getElementById('lineup-img-1');
+        const lineupImg2El = document.getElementById('lineup-img-2');
+
         (async function () {
           let response1 = await fetch(`/api/lineups/${anchorPairs[selectedAnchorPairIndex].lineupId}`);
           let lineup = await response1.json();
           let response2 = await fetch(`/api/agents/${lineup.agent._id}`);
           let abilities = await response2.json();
-          lineupTableEl.tBodies[0].innerHTML = 
-          `<tr>
-            <th scope="row">${lineup.name}</th>
-            <td><img id="lineup-ability"></td>
-            <td>
-              ${ lineup.url === "" ? "No Video Provided" :
-              `<div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" src="${lineup.url}" allowfullscreen></iframe>
-              </div>`
-              }
-            </td>
-            <td>
-              <img src="${lineup.images[0] === undefined ? "" : lineup.images[0]}" class="map-lineup-images">
-              <img src="${lineup.images[1] === undefined ? "" : lineup.images[1]}" class="map-lineup-images">
-              <img src="${lineup.images[2] === undefined ? "" : lineup.images[2]}" class="map-lineup-images">
-            </td>
-          </tr>`;
-          const lineupAbilityEl = document.getElementById('lineup-ability');
+
+          lineupNameEl.innerText = `${lineup.name}`;
+          if (`${lineup.url}` == "") {
+            lineupUrlEl.innerHTML = "";
+            lineupUrlEl.innerText = "No Video Provided";
+          } else {
+            lineupYTEl.src = `${lineup.url}`;
+          } 
+          lineupImg0El.src = `${lineup.images[0]}`;
+          lineupImg1El.src = `${lineup.images[1]}`;
+          lineupImg2El.src = `${lineup.images[2]}`;
+
           abilities.forEach(function(a) {
             if (a._id === lineup.ability) return lineupAbilityEl.src = `${a.icon}`;
           });

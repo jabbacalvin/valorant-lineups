@@ -19,7 +19,6 @@ async function show(req, res) {
 async function showOne(req, res) {
   try {
     const lineup = await Lineup.findOne({ _id: req.params.lineupId }).populate('agent');
-    console.log(lineup);
     res.json(lineup);
   } catch (err) {
     console.log(err);
