@@ -5,7 +5,8 @@ const Lineup = require("../models/lineup");
 
 module.exports = {
   index,
-  show
+  show,
+  showWithUrl
 };
 
 async function index(req, res) {
@@ -24,3 +25,13 @@ async function show(req, res) {
   res.render("maps/show", { title: `${map.name}`, map, agents, lineups });
 }
 
+async function showWithUrl(req, res) {
+  const mapName = req.params.name.charAt(0).toUpperCase() + req.params.name.slice(1); // Capitalize first character
+  const map = await Map.findOne({ name: mapName });
+  const agents = await Agent.find().sort({ name: 1 });
+  const lineups = await Lineup.find({ map: map._id })
+    .populate('coordinates')
+    .populate('agent');
+
+  res.render("maps/show", { title: `${map.name}`, map, agents, lineups });
+}

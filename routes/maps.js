@@ -5,8 +5,8 @@ const mapsCtrl = require("../controllers/maps");
 //GET /maps
 router.get("/", mapsCtrl.index);
 
-// //GET /maps/:id
-// router.get("/:id", mapsCtrl.show);
+//GET /maps/:name
+router.get("/:name", mapsCtrl.showWithUrl);
 
 router.post("/:name", mapsCtrl.show);
 
