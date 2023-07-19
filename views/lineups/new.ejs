@@ -69,6 +69,7 @@
                 <div class="invalid-feedback">
                   Please select an agent ability.
                 </div>
+                <img src="" id="ability-icon" width="32" height="32" hidden>
               </div>
             </div>
           </div>
@@ -100,6 +101,7 @@
     const submitBtnEl = document.getElementById("submit-btn");
     const agentSelectEl = document.getElementById("agent-select");
     const abilitySelectEl = document.getElementById("ability-select");
+    const abilityIconEl = document.getElementById("ability-icon");
     const inputUrlEl = document.getElementById("input-url");
     const embedUrlEl = document.getElementById("embed-url");
 
@@ -121,8 +123,11 @@
       let response = await fetch(`/api/agents/${agentId}`);
       let data = await response.json();
       data.forEach(function (a) {
-        abilitySelectEl.innerHTML += `<option value='${a._id}'> ${a.name} </option>`;
+        abilitySelectEl.innerHTML += `<option value='${a._id}' data-icon='${a.icon}'> ${a.name} </option>`;
       });
+    });
+    abilitySelectEl.addEventListener("change", function (e) {
+      abilityIconEl.src = e.target.selectedOptions[0].dataset.icon;
     });
     addMarkerBtnEl.addEventListener("click", function (e) {
       addAnchorPair();
